@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentProof — Security & Protection Rules</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <header class="options-header">
+      <div class="brand">
+        <img src="../icons/icon-48.png" alt="AgentProof Shield" class="brand-icon">
+        <div>
+          <h1>AgentProof Security Suite</h1>
+          <p class="subtitle">Local Protection Rules & Engine Configuration</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-reset-defaults" class="btn btn-secondary">Reset Defaults</button>
+        <button id="btn-save-settings" class="btn btn-primary">Save Changes</button>
+      </div>
+    </header>
+
+    <div id="status-banner" class="status-banner hidden"></div>
+
+    <main class="options-grid">
+      <!-- Section 1: Response Mode -->
+      <section class="card">
+        <h2>1. Active Protection Mode</h2>
+        <p class="description">Select how AgentProof responds when suspicious or confirmed threats are encountered.</p>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="responseLevel" value="monitor" checked>
+            <div class="radio-content">
+              <strong>Level 1 — Monitor Only</strong>
+              <span>Continuously inspects security headers, forms, cookies, and permissions. Records findings without interrupting navigation.</span>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="responseLevel" value="warn">
+            <div class="radio-content">
+              <strong>Level 2 — Warn on Suspicious Signals</strong>
+              <span>Presents an explicit warning screen before submitting forms or proceeding on unencrypted HTTP or suspicious hostnames.</span>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="responseLevel" value="block">
+            <div class="radio-content">
+              <strong>Level 3 — Block Confirmed Threats</strong>
+              <span>Automatically halts navigation to denylisted origins, known malicious domains, or verified password-over-HTTP leaks.</span>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="responseLevel" value="strict">
+            <div class="radio-content">
+              <strong>Level 4 — Strict Protection</strong>
+              <span>Enforces aggressive defensive posture: blocks all plain HTTP origins, untrusted double extensions, and unencrypted logins.</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section 2: Allowlist & Denylist -->
+      <section class="card">
+        <h2>2. Domain Rules (Allowlist & Denylist)</h2>
+        <p class="description">Manage explicit local domain rules. These take precedence over heuristic scores.</p>
+        <div class="split-columns">
+          <div class="column">
+            <label for="allowlist-input"><strong>Trusted Allowlist</strong> (one per line):</label>
+            <textarea id="allowlist-input" placeholder="example.com&#10;internal.local" rows="6"></textarea>
+            <span class="field-hint">Never blocks or warns on these exact hostnames.</span>
+          </div>
+          <div class="column">
+            <label for="denylist-input"><strong>Blocked Denylist</strong> (one per line):</label>
+            <textarea id="denylist-input" placeholder="malicious-example.com&#10;phishing-test.xyz" rows="6"></textarea>
+            <span class="field-hint">Always blocked immediately when protection is enabled.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Risk Thresholds -->
+      <section class="card">
+        <h2>3. Scoring Thresholds</h2>
+        <div class="form-row">
+          <label for="warn-threshold">Warning Threshold (Risk Score ≥):</label>
+          <input type="number" id="warn-threshold" min="10" max="90" value="40">
+        </div>
+        <div class="form-row">
+          <label for="block-threshold">Blocking Threshold (Risk Score ≥):</label>
+          <input type="number" id="block-threshold" min="50" max="100" value="75">
+        </div>
+        <div class="checkbox-row">
+          <label>
+            <input type="checkbox" id="block-http-passwords" checked>
+            <span>Always flag and block password submission over plain HTTP (Critical override).</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section 4: Downloads & Local Companion -->
+      <section class="card">
+        <h2>4. Downloads & Local Desktop Companion</h2>
+        <p class="description">Authenticate with the local desktop companion service for authorized file scanning and quarantine.</p>
+        <div class="checkbox-row">
+          <label>
+            <input type="checkbox" id="monitor-downloads" checked>
+            <span>Monitor browser downloads and flag deceptive double extensions (.pdf.exe, .doc.js).</span>
+          </label>
+        </div>
+        <div class="form-row">
+          <label for="companion-url">Companion API URL:</label>
+          <input type="text" id="companion-url" value="http://127.0.0.1:8000">
+        </div>
+        <div class="form-row">
+          <label for="companion-token">Companion Auth Token:</label>
+          <input type="password" id="companion-token" value="agentguard-local-secure-token">
+        </div>
+        <div class="action-row">
+          <button id="btn-test-companion" class="btn btn-secondary">Test Companion API</button>
+          <span id="companion-test-status" class="status-indicator"></span>
+        </div>
+      </section>
+
+      <!-- Section 5: Local Ollama AI Settings -->
+      <section class="card">
+        <h2>5. Local Ollama AI Assistance</h2>
+        <p class="description">AgentProof connects to local Ollama on loopback. Scans remain fully functional even if Ollama is offline.</p>
+        <div class="form-row">
+          <label for="ollama-url">Ollama URL:</label>
+          <input type="text" id="ollama-url" value="http://localhost:11434">
+        </div>
+        <div class="form-row">
+          <label for="ollama-model">Preferred Model:</label>
+          <input type="text" id="ollama-model" value="gemma4:e2b-it-qat" placeholder="e.g., gemma4:e2b-it-qat, llama3">
+        </div>
+        <div class="action-row">
+          <button id="btn-test-ollama" class="btn btn-secondary">Test Ollama Connection</button>
+          <span id="ollama-test-status" class="status-indicator"></span>
+        </div>
+      </section>
+
+      <!-- Section 6: Security Notifications -->
+      <section class="card">
+        <h2>6. Security Notifications</h2>
+        <div class="checkbox-row">
+          <label>
+            <input type="checkbox" id="notify-high-risk" checked>
+            <span>Notify on high-confidence threats and critical connection issues.</span>
+          </label>
+        </div>
+        <div class="checkbox-row">
+          <label>
+            <input type="checkbox" id="notify-downloads" checked>
+            <span>Notify when suspicious downloads with double extensions are intercepted.</span>
+          </label>
+        </div>
+        <div class="checkbox-row">
+          <label>
+            <input type="checkbox" id="suppress-duplicates" checked>
+            <span>Suppress duplicate notifications within 5 minutes for the same origin.</span>
+          </label>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

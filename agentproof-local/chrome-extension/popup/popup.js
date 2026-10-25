@@ -195,6 +195,29 @@ function setupActionButtons() {
   document.getElementById('btn-generate-ai').addEventListener('click', async () => {
     await handleAiSummary();
   });
+
+  const elOpenOptions = document.getElementById('btn-open-options');
+  if (elOpenOptions) {
+    elOpenOptions.addEventListener('click', () => {
+      chrome.runtime.openOptionsPage();
+    });
+  }
+
+  const elClearCookies = document.getElementById('btn-clear-site-cookies');
+  if (elClearCookies) {
+    elClearCookies.addEventListener('click', async () => {
+      if (!scanState.url) return;
+      if (!confirm(`Are you sure you want to clear cookies for ${scanState.hostname}? You will be signed out of this site.`)) return;
+      chrome.runtime.sendMessage({ action: 'CLEAR_CURRENT_COOKIES', url: scanState.url }, (res) => {
+        if (res && res.success) {
+          alert(`Successfully cleared ${res.count} cookies for ${scanState.hostname}.`);
+          runCookiesScan().then(recalculateAndRender);
+        } else {
+          alert(`Failed to clear cookies: ${(res && res.error) || 'Unknown error'}`);
+        }
+      });
+    });
+  }
 }
 
 /**

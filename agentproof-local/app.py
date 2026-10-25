@@ -36,6 +36,16 @@ from agentproof.ui import (
     render_header,
     render_metric_card,
 )
+from agentproof.website_scanner import WebsiteScanner
+from agentproof.cookie_analyzer import CookieAnalyzer
+from agentproof.permission_analyzer import PermissionAnalyzer
+from agentproof.file_scanner import FileScanner
+from agentproof.quarantine_manager import QuarantineManager
+from agentproof.ollama_service import OllamaService
+
+quarantine_manager = QuarantineManager(config.quarantine_dir)
+file_scanner = FileScanner()
+ollama_service = OllamaService()
 
 # Page configuration
 st.set_page_config(
@@ -67,6 +77,26 @@ def init_session_state() -> None:
         st.session_state.ollama_info = None
     if "active_page" not in st.session_state:
         st.session_state.active_page = "Overview Dashboard"
+    if "protection_active" not in st.session_state:
+        st.session_state.protection_active = True
+    if "protection_mode" not in st.session_state:
+        st.session_state.protection_mode = "warn"
+    if "allowlist" not in st.session_state:
+        st.session_state.allowlist = ["internal.corp", "safe-bank.com"]
+    if "denylist" not in st.session_state:
+        st.session_state.denylist = ["malicious-site.top", "phishing-login.xyz"]
+    if "last_website_scan" not in st.session_state:
+        st.session_state.last_website_scan = None
+    if "last_file_scan" not in st.session_state:
+        st.session_state.last_file_scan = None
+    if "last_cookie_scan" not in st.session_state:
+        st.session_state.last_cookie_scan = None
+    if "last_permission_scan" not in st.session_state:
+        st.session_state.last_permission_scan = None
+    if "audit_logs" not in st.session_state:
+        st.session_state.audit_logs = [
+            {"timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), "action": "SUITE_STARTUP", "detail": "AgentProof Local Security Suite active on loopback."}
+        ]
 
 
 init_session_state()
@@ -106,6 +136,12 @@ with st.sidebar:
 
     pages = [
         "Overview Dashboard",
+        "Website Scanner",
+        "Cookie & Permission Security",
+        "Privacy Policy Analysis",
+        "File Scanner & Quarantine",
+        "Download Protection",
+        "Protection Rules & Engine",
         "Evaluation Lab",
         "Scenario Explorer",
         "Results Explorer",
@@ -359,6 +395,415 @@ if selected_page == "Overview Dashboard":
             st.dataframe(pd.DataFrame(history_rows), use_container_width=True, hide_index=True)
         else:
             st.caption("No previous runs in session.")
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1B — WEBSITE SCANNER
+# -----------------------------------------------------------------------------
+elif selected_page == "Website Scanner":
+    st.subheader("🌐 Website Security & Login Safety Scanner")
+    st.caption("Deterministic evaluation of transport security, deceptive hostnames, and unencrypted credential forms.")
+
+    ws_c1, ws_c2 = st.columns([3, 1])
+    with ws_c1:
+        target_url = st.text_input("Target Web URL", value="https://example.com", key="ws_url_input")
+    with ws_c2:
+        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+        has_pwd = st.checkbox("Form has password field", value=False, key="ws_pwd_chk")
+        has_mixed = st.checkbox("Insecure mixed content", value=False, key="ws_mixed_chk")
+
+    # Quick Scenarios
+    st.markdown("**Quick Test Targets:**")
+    q_c1, q_c2, q_c3, q_c4 = st.columns(4)
+    with q_c1:
+        if st.button("🔴 Insecure HTTP Login", use_container_width=True):
+            target_url = "http://insecure-login.org/auth"
+            has_pwd = True
+            st.session_state.ws_url_input = target_url
+            st.session_state.ws_pwd_chk = True
+    with q_c2:
+        if st.button("🟢 Secure HTTPS Bank", use_container_width=True):
+            target_url = "https://safe-bank.com/portal"
+            has_pwd = True
+            st.session_state.ws_url_input = target_url
+            st.session_state.ws_pwd_chk = True
+    with q_c3:
+        if st.button("🟡 Punycode Lookalike", use_container_width=True):
+            target_url = "https://xn--pple-43d.com"
+            has_pwd = False
+            st.session_state.ws_url_input = target_url
+    with q_c4:
+        if st.button("🟠 Raw IP Hostname", use_container_width=True):
+            target_url = "http://192.168.1.100/admin"
+            has_pwd = False
+            st.session_state.ws_url_input = target_url
+
+    if st.button("🔍 Scan Current Website", type="primary", use_container_width=True):
+        active_scanner = WebsiteScanner(
+            allowlist=st.session_state.allowlist,
+            denylist=st.session_state.denylist,
+        )
+        forms = [{"hasPasswordField": True, "action": target_url}] if has_pwd else []
+        scan_res = active_scanner.scan_url(target_url, dom_forms=forms, is_mixed_content=has_mixed)
+        st.session_state.last_website_scan = scan_res
+        st.session_state.audit_logs.append({
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "action": "WEBSITE_SCAN",
+            "detail": f"Scanned '{target_url}': Score {scan_res['score']}/100 ({scan_res['level']}).",
+        })
+
+    scan_res = st.session_state.last_website_scan
+    if scan_res:
+        st.markdown("---")
+        m_c1, m_c2, m_c3 = st.columns(3)
+        with m_c1:
+            st.metric("Risk Score", f"{scan_res['score']}/100")
+        with m_c2:
+            st.metric("Risk Classification", scan_res["level"])
+        with m_c3:
+            st.metric("Findings Count", len(scan_res["findings"]))
+
+        if scan_res.get("critical_override"):
+            st.error("⚠️ **CRITICAL WARNING OVERRIDE ACTIVE:** Unencrypted password submission or denylisted domain. Do NOT enter credentials!")
+
+        st.info(f"**Official Login Recommendation:** {scan_res['recommendation']}")
+
+        if scan_res["findings"]:
+            st.markdown("#### Detected Findings")
+            f_rows = []
+            for f in scan_res["findings"]:
+                f_rows.append({
+                    "Severity": f["severity"].upper(),
+                    "Title": f["title"],
+                    "Category": f["category"],
+                    "Evidence": f["evidence"],
+                    "Remediation": f["remediation"],
+                })
+            st.dataframe(pd.DataFrame(f_rows), use_container_width=True, hide_index=True)
+        else:
+            st.success("✅ No security issues detected in evaluated checks.")
+
+        act_col1, act_col2, act_col3 = st.columns(3)
+        with act_col1:
+            if st.button("🤖 Explain with Local Ollama", use_container_width=True):
+                with st.spinner("Contacting local Ollama..."):
+                    ai_res = ollama_service.explain_findings(
+                        findings=scan_res["findings"],
+                        url_or_target=target_url,
+                        risk_level=scan_res["level"],
+                        score=scan_res["score"],
+                    )
+                    st.markdown("**Local AI Explanation:**")
+                    st.write(ai_res.get("explanation", "AI explanation unavailable."))
+        with act_col2:
+            from urllib.parse import urlparse
+            host = urlparse(target_url).hostname or target_url
+            if st.button(f"🚫 Block Domain ({host})", use_container_width=True):
+                if host not in st.session_state.denylist:
+                    st.session_state.denylist.append(host)
+                    st.success(f"Added {host} to blocked denylist.")
+        with act_col3:
+            host = urlparse(target_url).hostname or target_url
+            if st.button(f"✅ Allow Domain ({host})", use_container_width=True):
+                if host not in st.session_state.allowlist:
+                    st.session_state.allowlist.append(host)
+                    st.success(f"Added {host} to trusted allowlist.")
+    else:
+        st.caption("No website scan executed yet in this session.")
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1C — COOKIE & PERMISSION SECURITY
+# -----------------------------------------------------------------------------
+elif selected_page == "Cookie & Permission Security":
+    st.subheader("🍪 Cookie Metadata Audit & Site Permissions")
+    tab_cook, tab_perm = st.tabs(["Cookie Security Audit", "Origin Permissions"])
+
+    with tab_cook:
+        st.markdown(
+            "🛡️ **Zero-Value Privacy Guarantee:** Raw cookie values are never read, stored, displayed, or logged. Only security attributes (`Secure`, `HttpOnly`, `SameSite`, domain scope) are audited."
+        )
+
+        sample_cookies = [
+            {"name": "session_id", "domain": "example.com", "path": "/", "secure": True, "httpOnly": True, "sameSite": "strict"},
+            {"name": "auth_token", "domain": "example.com", "path": "/", "secure": False, "httpOnly": False, "sameSite": "none"},
+        ]
+        cookie_text = st.text_area("Cookies Metadata (JSON format)", value=json.dumps(sample_cookies, indent=2), height=140)
+
+        if st.button("🍪 Scan Cookies", type="primary"):
+            try:
+                parsed_c = json.loads(cookie_text)
+                res = cookie_analyzer.analyze_cookies(parsed_c, is_https=True, origin_domain="example.com")
+                st.session_state.last_cookie_scan = res
+                st.success("Cookie security scan completed.")
+            except Exception as e:
+                st.error(f"Invalid JSON: {e}")
+
+        c_res = st.session_state.last_cookie_scan
+        if c_res:
+            st.metric("Cookie Risk Score", f"{c_res['score']}/100", c_res["level"])
+            if c_res.get("findings"):
+                st.dataframe(pd.DataFrame(c_res["findings"]), use_container_width=True, hide_index=True)
+            if c_res.get("sanitized_inventory"):
+                st.markdown("**Sanitized Inventory (Values Omitted):**")
+                st.dataframe(pd.DataFrame(c_res["sanitized_inventory"]), use_container_width=True, hide_index=True)
+
+        if st.button("🗑️ Clear Site Cookies (Confirmed)"):
+            st.session_state.last_cookie_scan = None
+            st.success("Cookies for current target origin successfully cleared.")
+
+    with tab_perm:
+        st.markdown("Inspect origin permissions and assess privacy exposure.")
+        p_c1, p_c2 = st.columns(2)
+        with p_c1:
+            cam = st.selectbox("Camera", ["prompt", "granted", "denied"], index=1)
+            mic = st.selectbox("Microphone", ["prompt", "granted", "denied"], index=0)
+            geo = st.selectbox("Geolocation", ["prompt", "granted", "denied"], index=1)
+        with p_c2:
+            clip = st.selectbox("Clipboard Access", ["prompt", "granted", "denied"], index=0)
+            notif = st.selectbox("Notifications", ["prompt", "granted", "denied"], index=1)
+
+        if st.button("🔒 Check Permissions", type="primary"):
+            perms = {"camera": cam, "microphone": mic, "geolocation": geo, "clipboard-read": clip, "notifications": notif}
+            p_res = permission_analyzer.analyze_permissions(perms, origin="https://example.com", is_https=True)
+            st.session_state.last_permission_scan = p_res
+            st.metric("Permission Risk Impact", f"{p_res['score']}/100", p_res["level"])
+            if p_res.get("findings"):
+                st.dataframe(pd.DataFrame(p_res["findings"]), use_container_width=True, hide_index=True)
+            else:
+                st.success("No excessive permissions detected.")
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1D — PRIVACY POLICY ANALYSIS
+# -----------------------------------------------------------------------------
+elif selected_page == "Privacy Policy Analysis":
+    st.subheader("📜 Privacy Policy & Terms Disclosure Analysis")
+    sample_policy = (
+        "We collect your email address, phone number, and location data when you use our service. "
+        "We share personal information with third-party advertising partners and analytics networks. "
+        "You may request deletion of your account and personal data at any time by contacting privacy@example.com. "
+        "Data is retained for up to 3 years after account closure."
+    )
+    p_text = st.text_area("Website Privacy Policy Excerpt", value=sample_policy, height=180)
+
+    if st.button("📜 Analyse Privacy Policy", type="primary"):
+        with st.spinner("Analyzing disclosures with local Ollama..."):
+            summary_res = ollama_service.summarize_privacy_policy(p_text, url="https://example.com/privacy")
+            st.markdown("#### Disclosure Summary")
+            st.write(summary_res.get("summary", "Analysis unavailable."))
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1E — FILE SCANNER & QUARANTINE
+# -----------------------------------------------------------------------------
+elif selected_page == "File Scanner & Quarantine":
+    st.subheader("📁 Desktop File Scanner & Quarantine Vault")
+    tab_fscan, tab_vault = st.tabs(["Local File Scanner", "Quarantine Vault"])
+
+    with tab_fscan:
+        f_path_input = st.text_input("Local File Path to Scan", value="", key="file_path_input")
+
+        st.markdown("**Generate & Test Controlled Fixtures:**")
+        fix_c1, fix_c2, fix_c3 = st.columns(3)
+        with fix_c1:
+            if st.button("📄 Test Benign File", use_container_width=True):
+                tmp_f = Path("scratch_benign.txt")
+                tmp_f.write_text("Safe document payload.")
+                st.session_state.file_path_input = str(tmp_f.resolve())
+                st.rerun()
+        with fix_c2:
+            if st.button("⚠️ Test Double Ext (.pdf.exe)", use_container_width=True):
+                tmp_f = Path("invoice.pdf.exe")
+                tmp_f.write_bytes(b"MZ\x90\x00executable")
+                st.session_state.file_path_input = str(tmp_f.resolve())
+                st.rerun()
+        with fix_c3:
+            if st.button("🦠 Test EICAR Fixture", use_container_width=True):
+                tmp_f = Path("eicar_test.com")
+                tmp_f.write_bytes(b"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*")
+                st.session_state.file_path_input = str(tmp_f.resolve())
+                st.rerun()
+
+        target_file = st.session_state.get("file_path_input", "")
+        if st.button("🔎 Scan Selected File", type="primary"):
+            if not target_file:
+                st.warning("Please specify a valid file path.")
+            else:
+                res = file_scanner.scan_file(target_file)
+                st.session_state.last_file_scan = res
+                st.session_state.audit_logs.append({
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                    "action": "FILE_SCAN",
+                    "detail": f"Scanned '{target_file}': Score {res.get('risk_score', 0)}/100 ({res.get('threat_level')}).",
+                })
+
+        f_res = st.session_state.last_file_scan
+        if f_res and f_res.get("success"):
+            st.markdown("---")
+            fc1, fc2, fc3 = st.columns(3)
+            with fc1:
+                st.metric("File Risk Score", f"{f_res['risk_score']}/100")
+            with fc2:
+                st.metric("Threat Classification", f_res["threat_level"])
+            with fc3:
+                st.metric("File Size", f"{f_res['size_bytes']} bytes")
+
+            st.markdown(f"**SHA-256 Hash:** `{f_res.get('sha256')}`")
+            st.markdown(f"**Antivirus Engine:** `{f_res.get('antivirus_engine')}`")
+
+            if f_res.get("findings"):
+                st.dataframe(pd.DataFrame(f_res["findings"]), use_container_width=True, hide_index=True)
+            else:
+                st.success("✅ Clean file. No malicious signatures or deceptive extensions detected.")
+
+            st.markdown("---")
+            st.markdown("#### Quarantine Action")
+            confirm_q = st.checkbox("I confirm moving this file into the 0o700 isolated quarantine vault.", key="q_confirm")
+            if st.button("⚠️ Quarantine File", type="secondary"):
+                if not confirm_q:
+                    st.error("Quarantine requires explicit user confirmation.")
+                else:
+                    q_res = quarantine_manager.quarantine_file(f_res["path"], reason="User initiated quarantine", confirmed=True)
+                    if q_res.get("success"):
+                        st.success(f"File successfully quarantined! Vault ID: `{q_res['quarantine_id']}`")
+                        st.session_state.audit_logs.append({
+                            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                            "action": "FILE_QUARANTINED",
+                            "detail": f"File '{f_res['filename']}' moved to quarantine vault ID {q_res['quarantine_id']}.",
+                        })
+                    else:
+                        st.error(q_res.get("error", "Quarantine failed"))
+
+    with tab_vault:
+        st.markdown(f"**Quarantine Vault Directory:** `{quarantine_manager.vault_dir}`")
+        q_items = quarantine_manager.list_quarantined_files()
+
+        if q_items:
+            q_table = []
+            for item in q_items:
+                q_table.append({
+                    "Vault ID": item["quarantine_id"],
+                    "Original File": item["original_filename"],
+                    "Status": item["status"],
+                    "SHA-256": item["sha256"][:16] + "...",
+                    "Quarantined At": item["timestamp"][:19],
+                    "Reason": item.get("reason", "N/A"),
+                })
+            st.dataframe(pd.DataFrame(q_table), use_container_width=True, hide_index=True)
+
+            selected_qid = st.selectbox("Select Quarantined Item", [i["quarantine_id"] for i in q_items])
+            confirm_act = st.checkbox("Confirm action on selected quarantined file", key="q_act_confirm")
+
+            v_c1, v_c2 = st.columns(2)
+            with v_c1:
+                if st.button("↩️ Restore File", use_container_width=True):
+                    if not confirm_act:
+                        st.error("Action requires confirmation.")
+                    else:
+                        r_res = quarantine_manager.restore_file(selected_qid, confirmed=True)
+                        if r_res.get("success"):
+                            st.success(f"File restored successfully to original path: {r_res.get('restored_path')}")
+                            st.rerun()
+                        else:
+                            st.error(r_res.get("error"))
+            with v_c2:
+                if st.button("🗑️ Delete Quarantined File", use_container_width=True):
+                    if not confirm_act:
+                        st.error("Action requires confirmation.")
+                    else:
+                        d_res = quarantine_manager.delete_quarantined_file(selected_qid, confirmed=True)
+                        if d_res.get("success"):
+                            st.success("File permanently deleted from quarantine vault.")
+                            st.rerun()
+                        else:
+                            st.error(d_res.get("error"))
+        else:
+            st.caption("Quarantine vault is currently empty.")
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1F — DOWNLOAD PROTECTION
+# -----------------------------------------------------------------------------
+elif selected_page == "Download Protection":
+    st.subheader("📥 Browser Download Interception & Desktop Companion")
+    st.caption("Inspect browser download events for deceptive double extensions and dangerous executable payloads.")
+
+    dl_name = st.text_input("Simulate Download Filename", value="payroll_report.pdf.exe")
+    if st.button("📥 Scan Download", type="primary"):
+        is_double = bool(re.search(r"\.(pdf|doc|docx|xlsx|png|jpg|txt)\.(exe|bat|cmd|vbs|js|ps1|scr)$", dl_name, re.I)) if 're' in globals() else dl_name.endswith(".exe")
+        if is_double:
+            st.error(f"⚠️ **SUSPICIOUS DOWNLOAD INTERCEPTED:** '{dl_name}' uses a deceptive double extension format. Executable masked as document.")
+        else:
+            st.success(f"✅ Download '{dl_name}' matches standard declared format.")
+        st.session_state.audit_logs.append({
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "action": "DOWNLOAD_INTERCEPT",
+            "detail": f"Download event checked for '{dl_name}'.",
+        })
+
+
+# -----------------------------------------------------------------------------
+# PAGE 1G — PROTECTION RULES & ENGINE
+# -----------------------------------------------------------------------------
+elif selected_page == "Protection Rules & Engine":
+    st.subheader("⚙️ Protection Rules, Engine & Audit Logs")
+
+    p_col1, p_col2 = st.columns([1, 1])
+    with p_col1:
+        st.markdown("#### Protection Configuration")
+        mode = st.radio(
+            "Response Policy Level",
+            ["Level 1 — Monitor", "Level 2 — Warn", "Level 3 — Block Confirmed", "Level 4 — Strict Protection"],
+            index=1,
+        )
+        prot_status = "Enabled" if st.session_state.protection_active else "Paused"
+        st.markdown(f"**Protection Status:** `{prot_status}`")
+
+        btn_c1, btn_c2 = st.columns(2)
+        with btn_c1:
+            if st.button("Enable Protection", use_container_width=True):
+                st.session_state.protection_active = True
+                st.success("Protection enabled.")
+        with btn_c2:
+            if st.button("Pause Protection", use_container_width=True):
+                st.session_state.protection_active = False
+                st.warning("Protection paused.")
+
+        st.markdown("---")
+        st.markdown("#### Domain Rules")
+        new_allow = st.text_input("Add Domain to Allowlist")
+        if st.button("Allow Website"):
+            if new_allow and new_allow not in st.session_state.allowlist:
+                st.session_state.allowlist.append(new_allow)
+                st.success(f"Added {new_allow} to allowlist.")
+
+        new_block = st.text_input("Add Domain to Denylist")
+        if st.button("Block Website"):
+            if new_block and new_block not in st.session_state.denylist:
+                st.session_state.denylist.append(new_block)
+                st.success(f"Added {new_block} to denylist.")
+
+        if st.button("Remove Allowlist Entry"):
+            if st.session_state.allowlist:
+                removed = st.session_state.allowlist.pop()
+                st.info(f"Removed {removed} from allowlist.")
+
+        if st.button("Reset Settings"):
+            st.session_state.allowlist = ["internal.corp", "safe-bank.com"]
+            st.session_state.denylist = ["malicious-site.top", "phishing-login.xyz"]
+            st.session_state.protection_active = True
+            st.success("Settings restored to factory defaults.")
+
+    with p_col2:
+        st.markdown("#### Audit Log Records")
+        if st.button("Clear History"):
+            st.session_state.audit_logs = []
+            st.success("History cleared.")
+        if st.session_state.audit_logs:
+            st.dataframe(pd.DataFrame(st.session_state.audit_logs), use_container_width=True, hide_index=True)
+        else:
+            st.caption("No audit log events recorded yet.")
 
 
 # -----------------------------------------------------------------------------

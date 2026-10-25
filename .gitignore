@@ -43,3 +43,9 @@ reports/*.md
 .vscode/
 *.swp
 *.swo
+
+# Quarantined payloads and manifests
+quarantine_vault/
+*.quarantined
+quarantine_manifest.json
+

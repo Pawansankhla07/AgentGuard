@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentProof — Connection Warning</title>
+  <style>
+    :root {
+      --bg: #090b10;
+      --card: #131722;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #242c3d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .warning-card {
+      background: var(--card);
+      border: 1px solid var(--warning);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+      border-radius: 14px;
+      max-width: 620px;
+      width: 100%;
+      padding: 36px 32px;
+      text-align: center;
+    }
+    .icon-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--warning);
+    }
+    p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .evidence-box {
+      background: #1a202c;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #e2e8f0;
+      margin-bottom: 28px;
+    }
+    .evidence-box strong {
+      color: #cbd5e1;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn-safety {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-proceed {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-safety:hover, .btn-proceed:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="warning-card">
+    <div class="icon-badge">⚠️</div>
+    <h1>Security Warning Before Proceeding</h1>
+    <p>AgentProof detected that this website uses an unencrypted connection (plain HTTP) or exhibits suspicious attributes. Do not enter passwords or sensitive personal data.</p>
+    
+    <div class="evidence-box">
+      <strong>Target Destination:</strong>
+      <div id="target-url" style="word-break: break-all; margin-bottom: 10px;">Unknown</div>
+      <strong>Observed Risk Factor:</strong>
+      <div id="warning-reason">Unencrypted HTTP connection: traffic can be intercepted by network eavesdroppers.</div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-back" class="btn-safety">Go Back to Safety</button>
+      <button id="btn-proceed" class="btn-proceed">Proceed at My Own Risk</button>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const targetUrl = params.get('url') || 'Unknown';
+    const reason = params.get('reason') || 'Unencrypted HTTP or untrusted origin attributes';
+
+    document.getElementById('target-url').textContent = targetUrl;
+    document.getElementById('warning-reason').textContent = reason;
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'chrome://newtab';
+      }
+    });
+
+    document.getElementById('btn-proceed').addEventListener('click', () => {
+      if (targetUrl !== 'Unknown') {
+        window.location.href = targetUrl;
+      }
+    });
+  </script>
+</body>
+</html>

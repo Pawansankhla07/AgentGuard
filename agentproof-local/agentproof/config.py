@@ -20,6 +20,12 @@ class AppConfig(BaseModel):
     reports_dir: str = Field(
         default_factory=lambda: os.getenv("REPORTS_DIR", "reports")
     )
+    quarantine_dir: str = Field(
+        default_factory=lambda: os.getenv("QUARANTINE_DIR", "quarantine_vault")
+    )
+    companion_token: str = Field(
+        default_factory=lambda: os.getenv("COMPANION_TOKEN", "agentguard-local-secure-token")
+    )
     app_version: str = "1.0.0"
 
 

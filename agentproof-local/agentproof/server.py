@@ -6,7 +6,7 @@ and reporting system via local HTTP endpoints.
 
 from datetime import datetime, timezone
 from typing import Any, Literal, Optional
-from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -385,5 +385,211 @@ def get_security_glossary() -> list[dict[str, Any]]:
     """Return structured AI agent security terminology."""
     from agentproof.glossary import SECURITY_GLOSSARY
     return SECURITY_GLOSSARY
+
+
+# ---------------------------------------------------------------------------
+# Desktop Companion & Local Security Suite Endpoints
+# ---------------------------------------------------------------------------
+
+from agentproof.file_scanner import FileScanner
+from agentproof.quarantine_manager import QuarantineManager
+from agentproof.website_scanner import WebsiteScanner
+from agentproof.cookie_analyzer import CookieAnalyzer
+from agentproof.permission_analyzer import PermissionAnalyzer
+from agentproof.ollama_service import OllamaService
+
+file_scanner = FileScanner()
+quarantine_manager = QuarantineManager(config.quarantine_dir)
+website_scanner = WebsiteScanner()
+cookie_analyzer = CookieAnalyzer()
+permission_analyzer = PermissionAnalyzer()
+ollama_service = OllamaService()
+
+
+def verify_companion_token(
+    request: Request,
+    x_agentproof_token: Optional[str] = Header(None, alias="X-AgentProof-Token"),
+    authorization: Optional[str] = Header(None),
+) -> None:
+    """Validate loopback binding and token authentication for companion operations."""
+    client_host = request.client.host if request.client else "unknown"
+    if client_host not in ("127.0.0.1", "::1", "localhost", "testclient"):
+        raise HTTPException(status_code=403, detail="Companion API strictly bound to loopback.")
+
+    bearer = (
+        authorization.replace("Bearer ", "").strip()
+        if authorization and authorization.startswith("Bearer ")
+        else None
+    )
+    token = x_agentproof_token or bearer
+    if not token or token != config.companion_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized: valid companion token required in 'X-AgentProof-Token' or Bearer header.",
+        )
+
+
+class CompanionScanRequest(BaseModel):
+    file_path: str
+
+
+class QuarantineRequest(BaseModel):
+    file_path: str
+    reason: str = "Suspicious file detected by security policy"
+    confirmed: bool = False
+
+
+class QuarantineRestoreRequest(BaseModel):
+    quarantine_id: str
+    target_dir: Optional[str] = None
+    confirmed: bool = False
+
+
+class WebsiteScanRequest(BaseModel):
+    url: str
+    dom_forms: Optional[list[dict[str, Any]]] = None
+    is_mixed_content: bool = False
+
+
+class CookieAnalysisRequest(BaseModel):
+    cookies: list[dict[str, Any]]
+    is_https: bool = True
+    origin_domain: str = ""
+
+
+class PermissionAnalysisRequest(BaseModel):
+    permissions: dict[str, str]
+    origin: str = ""
+    is_https: bool = True
+
+
+class OllamaExplainRequest(BaseModel):
+    findings: list[dict[str, Any]]
+    target: str
+    risk_level: str
+    score: int
+    model_name: Optional[str] = None
+
+
+class OllamaPrivacyPolicyRequest(BaseModel):
+    policy_text: str
+    url: str = ""
+    model_name: Optional[str] = None
+
+
+@app.get("/api/companion/status")
+def get_companion_status() -> dict[str, Any]:
+    """Return companion service health, local ClamAV availability, and quarantine stats."""
+    return {
+        "status": "active",
+        "antivirus_available": file_scanner.is_antivirus_available(),
+        "quarantine_count": len(quarantine_manager.list_quarantined_files()),
+        "quarantine_vault": str(quarantine_manager.vault_dir),
+        "auth_required": True,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.post("/api/companion/scan", dependencies=[Depends(verify_companion_token)])
+def scan_local_file(req: CompanionScanRequest) -> dict[str, Any]:
+    """Perform authorized file inspection, cryptographic hashing, and signature validation."""
+    result = file_scanner.scan_file(req.file_path)
+    if not result.get("success", False) and "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+@app.get("/api/companion/quarantine", dependencies=[Depends(verify_companion_token)])
+def list_quarantined_files() -> list[dict[str, Any]]:
+    """List all quarantined files from persistent audit manifest."""
+    return quarantine_manager.list_quarantined_files()
+
+
+@app.post("/api/companion/quarantine", dependencies=[Depends(verify_companion_token)])
+def quarantine_file_endpoint(req: QuarantineRequest) -> dict[str, Any]:
+    """Move a suspicious file to isolated quarantine vault with cryptographic integrity check."""
+    result = quarantine_manager.quarantine_file(
+        file_path=req.file_path,
+        reason=req.reason,
+        confirmed=req.confirmed,
+    )
+    if not result.get("success", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "Quarantine failed"))
+    return result
+
+
+@app.post("/api/companion/quarantine/restore", dependencies=[Depends(verify_companion_token)])
+def restore_quarantined_file(req: QuarantineRestoreRequest) -> dict[str, Any]:
+    """Restore a quarantined file back to original or specified destination."""
+    result = quarantine_manager.restore_file(
+        quarantine_id=req.quarantine_id,
+        target_dir=req.target_dir,
+        confirmed=req.confirmed,
+    )
+    if not result.get("success", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "Restoration failed"))
+    return result
+
+
+@app.delete("/api/companion/quarantine/{quarantine_id}", dependencies=[Depends(verify_companion_token)])
+def delete_quarantined_file(quarantine_id: str, confirmed: bool = Query(default=False)) -> dict[str, Any]:
+    """Permanently delete a quarantined file after explicit confirmation."""
+    result = quarantine_manager.delete_quarantined_file(quarantine_id=quarantine_id, confirmed=confirmed)
+    if not result.get("success", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "Deletion failed"))
+    return result
+
+
+@app.post("/api/scanner/website")
+def scan_website_endpoint(req: WebsiteScanRequest) -> dict[str, Any]:
+    """Inspect website URL, transport protocol, and DOM forms deterministically."""
+    return website_scanner.scan_url(
+        url=req.url,
+        dom_forms=req.dom_forms,
+        is_mixed_content=req.mixed_content if hasattr(req, "mixed_content") else req.is_mixed_content,
+    )
+
+
+@app.post("/api/scanner/cookies")
+def scan_cookies_endpoint(req: CookieAnalysisRequest) -> dict[str, Any]:
+    """Analyze cookie security metadata without storing or transmitting sensitive values."""
+    return cookie_analyzer.analyze_cookies(
+        cookies=req.cookies,
+        is_https=req.is_https,
+        origin_domain=req.origin_domain,
+    )
+
+
+@app.post("/api/scanner/permissions")
+def scan_permissions_endpoint(req: PermissionAnalysisRequest) -> dict[str, Any]:
+    """Analyze site permission grants and calculate privacy exposure."""
+    return permission_analyzer.analyze_permissions(
+        permissions=req.permissions,
+        origin=req.origin,
+        is_https=req.is_https,
+    )
+
+
+@app.post("/api/ollama/explain")
+def explain_with_ollama(req: OllamaExplainRequest) -> dict[str, Any]:
+    """Synthesize beginner-friendly AI explanation using local Ollama model."""
+    return ollama_service.explain_findings(
+        findings=req.findings,
+        url_or_target=req.target,
+        risk_level=req.risk_level,
+        score=req.score,
+        model_name=req.model_name,
+    )
+
+
+@app.post("/api/ollama/privacy-policy")
+def summarize_privacy_policy_endpoint(req: OllamaPrivacyPolicyRequest) -> dict[str, Any]:
+    """Summarize privacy policy disclosures using local Ollama model."""
+    return ollama_service.summarize_privacy_policy(
+        policy_text=req.policy_text,
+        url=req.url,
+        model_name=req.model_name,
+    )
+
 
 

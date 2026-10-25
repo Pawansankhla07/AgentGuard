@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentProof — Navigation Blocked</title>
+  <style>
+    :root {
+      --bg: #090b10;
+      --card: #131722;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #242c3d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .blocked-card {
+      background: var(--card);
+      border: 1px solid var(--danger);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+      border-radius: 14px;
+      max-width: 620px;
+      width: 100%;
+      padding: 36px 32px;
+      text-align: center;
+    }
+    .icon-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--danger);
+    }
+    p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .evidence-box {
+      background: #1a202c;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #e2e8f0;
+      margin-bottom: 28px;
+    }
+    .evidence-box strong {
+      color: #cbd5e1;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn-safety {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-override {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-safety:hover, .btn-override:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="blocked-card">
+    <div class="icon-badge">🛡️</div>
+    <h1>Website Blocked by Security Policy</h1>
+    <p>AgentProof prevented your browser from loading this website because it matches a high-confidence threat rule or confirmed security violation.</p>
+    
+    <div class="evidence-box">
+      <strong>Target URL:</strong>
+      <div id="target-url" style="word-break: break-all; margin-bottom: 10px;">Unknown</div>
+      <strong>Detection Reason:</strong>
+      <div id="block-reason">Suspicious destination matched your local protection policy.</div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-back" class="btn-safety">Go Back to Safety</button>
+      <button id="btn-override" class="btn-override">Proceed Anyway (Override)</button>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const targetUrl = params.get('url') || 'Unknown';
+    const reason = params.get('reason') || 'Blocked according to user-configured protection policy';
+
+    document.getElementById('target-url').textContent = targetUrl;
+    document.getElementById('block-reason').textContent = reason;
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'chrome://newtab';
+      }
+    });
+
+    document.getElementById('btn-override').addEventListener('click', () => {
+      if (confirm('Warning: Proceeding to this site may expose your data or credentials. Are you sure you want to bypass protection?')) {
+        if (targetUrl !== 'Unknown') {
+          window.location.href = targetUrl;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
