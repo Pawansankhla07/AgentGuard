@@ -24,7 +24,7 @@ export function Navbar({
   activeTopic,
   onSelectTopic,
   onOpenDashboard,
-  repoUrl = "https://github.com/shreyashbhosale/AgentGuard",
+  repoUrl = "https://github.com/shreyash-bhosale/AgentGuard",
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

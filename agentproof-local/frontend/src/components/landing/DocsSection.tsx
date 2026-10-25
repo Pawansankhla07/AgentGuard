@@ -14,7 +14,7 @@ export function DocsSection() {
     {
       title: "1. Quickstart & Installation",
       desc: "Clone repository, create virtual environment, and install dependencies:",
-      code: `git clone https://github.com/shreyashbhosale/AgentGuard.git
+      code: `git clone https://github.com/shreyash-bhosale/AgentGuard.git
 cd AgentGuard/agentproof-local
 python3 -m venv .venv
 source .venv/bin/activate

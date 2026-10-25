@@ -114,7 +114,7 @@ const TOPIC_SHORTCUTS: {
 export function HeroSection({
   onSelectTopic,
   onOpenDashboard,
-  repoUrl = "https://github.com/shreyashbhosale/AgentGuard",
+  repoUrl = "https://github.com/shreyash-bhosale/AgentGuard",
 }: HeroSectionProps) {
   const heroRef = useRef<HTMLDivElement>(null)
 

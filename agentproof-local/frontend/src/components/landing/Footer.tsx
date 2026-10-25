@@ -10,7 +10,7 @@ interface FooterProps {
 export function Footer({
   onNavigate,
   onOpenDashboard,
-  repoUrl = "https://github.com/shreyashbhosale/AgentGuard",
+  repoUrl = "https://github.com/shreyash-bhosale/AgentGuard",
 }: FooterProps) {
   return (
     <footer className="border-t border-white/10 bg-transparent py-14 text-xs text-[#727B8D]">
