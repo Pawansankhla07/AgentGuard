@@ -30,7 +30,13 @@ import {
 import { DEMO_REPORT, DEMO_RUNS_HISTORY, DEMO_SCENARIOS } from "@/lib/demoData"
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<string>("landing")
+  const [currentTab, setCurrentTab] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      return params.get("page") || params.get("tab") || "landing"
+    }
+    return "landing"
+  })
   const [health, setHealth] = useState<HealthInfo | null>(null)
   const [modelsInfo, setModelsInfo] = useState<ModelsInfo | null>(null)
   const [scenarios, setScenarios] = useState<ScenarioModel[]>(DEMO_SCENARIOS)

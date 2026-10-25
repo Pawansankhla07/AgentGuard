@@ -1,174 +1,253 @@
-# 🛡️ AgentProof Local Security Suite (AgentGuard)
+# 🛡️ AgentGuard (AgentProof Local Security Suite)
 
-> **Local-first website safety, browser threat interception, desktop file quarantine, and deterministic AI agent policy governance.**
+<p align="center">
+  <img src="docs/assets/01_landing_hero.png" alt="AgentGuard Showcase Landing Hero" width="920" style="border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.8);" />
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://python.org)
-[![FastAPI: 0.115+](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com)
-[![Chrome Extension: MV3](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-success.svg)](./agentproof-local/chrome-extension)
-[![Python Tests: 89 Passed](https://img.shields.io/badge/Python_Tests-89%20Passed-brightgreen.svg)](./agentproof-local/tests)
-[![Extension Tests: 22 Passed](https://img.shields.io/badge/Extension_Tests-22%20Passed-brightgreen.svg)](./agentproof-local/chrome-extension/tests)
+<p align="center">
+  <strong>Local-First Personal Security Suite, Manifest V3 Browser Protection, POSIX Quarantine Vault, and Deterministic AI Agent Governance.</strong>
+</p>
+
+<p align="center">
+  <a href="https://frontend-lake-delta-0bodi7q6wt.vercel.app/"><img src="https://img.shields.io/badge/Live_Deployment-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Deployment on Vercel" /></a>
+  <a href="https://github.com/shreyash-bhosale/AgentGuard"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repository" /></a>
+  <a href="#-quickstart--installation"><img src="https://img.shields.io/badge/Automated_Tests-111_Passed_|_100%25-35C98A?style=for-the-badge&logo=pytest&logoColor=white" alt="111 Passing Tests" /></a>
+  <a href="./SECURITY.md"><img src="https://img.shields.io/badge/Privacy-Zero_Knowledge-blue?style=for-the-badge&logo=auth0&logoColor=white" alt="Zero-Knowledge Privacy" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-white?style=for-the-badge" alt="MIT License" /></a>
+</p>
 
 ---
 
-## 📖 Product Vision & Architecture
+## 🌐 Quick Access & Deployment Links
 
-AgentProof Local is a personal, local-first security suite operating across four synchronized components:
+| Environment / Service | Access URL | Port / Protocol | Description |
+|:---|:---|:---|:---|
+| 🚀 **Live Production Web App** | [**frontend-lake-delta-0bodi7q6wt.vercel.app**](https://frontend-lake-delta-0bodi7q6wt.vercel.app/) | `HTTPS / CDN` | Deployed showcase portal, live testing workbench, 3D WebGL scene, and extension downloads. |
+| 💻 **Local Web Application** | [**http://127.0.0.1:5173**](http://127.0.0.1:5173) | `Port 5173 / HTTP` | Local React + Vite dashboard with 5 interactive testing workbenches and live policy simulator. |
+| 🖥️ **Desktop Security Companion** | [**http://127.0.0.1:8501**](http://127.0.0.1:8501) | `Port 8501 / Streamlit` | Desktop companion app with 13 functional modules, real-time monitors, and POSIX `0o700` Quarantine Vault. |
+| ⚡ **Local Security Engine (API)** | [**http://127.0.0.1:8000/docs**](http://127.0.0.1:8000/docs) | `Port 8000 / FastAPI` | Loopback security daemon with Swagger OpenAPI documentation, risk endpoints, and fixture APIs. |
+| 📦 **GitHub Repository** | [**github.com/shreyash-bhosale/AgentGuard**](https://github.com/shreyash-bhosale/AgentGuard) | `Git / HTTPS` | Official source repository, release assets, test suites, and audit logs. |
+
+---
+
+## 📸 Visual Showcase & Feature Tour
+
+### 1. Architecture Demo Video & Interactive Walkthrough
+> *Embedded interactive video player with live timeline scrubbing, dynamic security telemetry HUD, and milestone chapters.*
+<p align="center">
+  <img src="docs/assets/02_demo_video.png" alt="Demo Video Walkthrough" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+### 2. Live Testing Workbench & Controlled Security Fixtures
+> *Test heuristic risk scoring, zero-knowledge cookie redaction, origin sensor permissions, and isolate malware fixtures in a safe local environment.*
+<p align="center">
+  <img src="docs/assets/03_live_testing_workbench.png" alt="Live Testing Workbench" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+### 3. Policy Playground & Fail-Closed Gate Simulator
+> *Simulate deterministic AI agent proposals against real-time policy gates (allowlist verification, target constraints, and jailbreak containment).*
+<p align="center">
+  <img src="docs/assets/04_policy_simulator.png" alt="Policy Simulator" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+### 4. Chrome Security Extension (Manifest V3)
+> *Event-driven background listeners (`chrome.tabs.onUpdated`, `chrome.downloads.onCreated`) evaluate transport security, block unencrypted logins, and intercept double extensions.*
+<p align="center">
+  <img src="docs/assets/05_chrome_extension_guide.png" alt="Chrome Extension Hub" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+### 5. Desktop Companion & POSIX `0o700` Quarantine Vault
+> *Isolates deceptive executables to a restricted vault directory, verifies pre/post SHA-256 checksums, and provides safe restore and permanent deletion.*
+<p align="center">
+  <img src="docs/assets/10_desktop_quarantine_vault.png" alt="Streamlit Desktop Companion & Quarantine Vault" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+### 6. Evaluation Lab & Results Explorer
+> *Evaluates 12 adversarial AI agent attack benchmarks (prompt injection, directory traversal, SQL injection, data exfiltration) with 100% deterministic accuracy.*
+<p align="center">
+  <img src="docs/assets/07_dashboard_overview.png" alt="Dashboard Overview" width="880" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+</p>
+
+---
+
+## 🏛️ System Architecture & Four Core Components
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       AGENTGUARD LOCAL SECURITY SUITE                       │
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │
+     ┌─────────────────────────────────┼─────────────────────────────────┐
+     │                                 │                                 │
+     ▼                                 ▼                                 ▼
+┌──────────────────────────┐   ┌──────────────────────────┐   ┌──────────────────────────┐
+│  Chrome Extension (MV3)  │   │  Local Security Engine   │   │  Desktop Companion &     │
+│                          │   │  (FastAPI on Loopback)   │   │  Quarantine Vault        │
+├──────────────────────────┤   ├──────────────────────────┤   ├──────────────────────────┤
+│ • chrome.tabs.onUpdated  │   │ • Loopback 127.0.0.1:8000│   │ • POSIX 0o700 Isolation  │
+│ • chrome.downloads API   │◄─►│ • X-AgentProof-Token Auth│◄─►│ • SHA-256 Pre/Post Move  │
+│ • Critical HTTP Overrides│   │ • 0-100 Heuristic Engine │   │ • Double-Ext Interception│
+│ • Zero-Knowledge Cookies │   │ • Fail-Closed AI Policies│   │ • Audit Manifest Logging │
+└──────────────────────────┘   └─────────────┬────────────┘   └──────────────────────────┘
+                                             │
+                                             ▼
+                               ┌──────────────────────────┐
+                               │     Local Ollama AI      │
+                               │ (Advisory Decoupled LLM) │
+                               ├──────────────────────────┤
+                               │ • Gemma 4 Advisory Expl. │
+                               │ • Privacy Policy Summary │
+                               │ • Fail-Closed Isolation  │
+                               └──────────────────────────┘
+```
 
 1. **Chrome Security Extension (Manifest V3)**:
-   - Continuously monitors browser events (`tabs.onUpdated`, `downloads.onCreated`).
-   - Evaluates website transport (HTTPS vs unencrypted plain HTTP).
-   - Detects deceptive hostnames (Punycode IDN homographs, raw IP literals).
-   - Flags passwords submitted over unencrypted HTTP (Critical Override: score ≥ 75).
-   - Audits cookie security metadata (`Secure`, `HttpOnly`, `SameSite`) with strict **Zero-Knowledge Privacy** (raw cookie values are never stored, logged, or exported).
-   - Intercepts deceptive double extensions (`.pdf.exe`, `.doc.js`).
-   - Enforces configurable response policies: **Monitor (Level 1)**, **Warn (Level 2)**, **Block Confirmed Threats (Level 3)**, and **Strict Protection (Level 4)**.
+   - Evaluates website transport security (HTTPS vs unencrypted plain HTTP).
+   - Detects deceptive hostnames (IDN Punycode `xn--` lookalikes, raw IPv4 literals).
+   - Detects password fields over unencrypted HTTP: enforces deterministic **Critical Override (Score ≥ 75)**.
+   - Enforces **Zero-Knowledge Cookie Privacy**: raw values are never read, stored, displayed, or logged.
+   - Configurable protection modes: *Monitor (Level 1)*, *Warn (Level 2)*, *Block Confirmed Threats (Level 3)*, and *Strict Protection (Level 4)*.
 
-2. **Local Security Engine & API (FastAPI)**:
-   - Loopback-only service (`http://127.0.0.1:8000`) authenticated via `X-AgentProof-Token`.
-   - Exposes deterministic 0–100 risk scoring, scenario evaluations, and report generation.
-   - Enforces a 5-layer fail-closed policy engine for autonomous AI agents.
+2. **Local Security Engine (FastAPI)**:
+   - Loopback-only service (`127.0.0.1:8000`) protected with `X-AgentProof-Token` authentication.
+   - Provides deterministic 0–100 risk scoring, scenario runners, and test fixture APIs (`/api/fixtures`).
 
 3. **Desktop Security Companion & Quarantine Vault**:
-   - Computes cryptographic hashes (SHA-256, SHA-1, MD5).
-   - Performs binary magic-byte inspection (PE, ELF, Mach-O vs declared file extension).
-   - Detects benign test fixtures (EICAR standard test string) and optional local ClamAV integration.
-   - Manages an isolated quarantine repository with POSIX `0o700` restricted permissions.
-   - Pre-move and post-move SHA-256 validation prevents data loss or corruption.
-   - Reversible restore and confirmed permanent deletion with persistent audit manifest (`quarantine_manifest.json`).
+   - Computes cryptographic digests (SHA-256, SHA-1, MD5) and inspects binary magic bytes (`MZ`, `\x7fELF`, Mach-O).
+   - Enforces POSIX `0o700` isolation to prevent accidental execution.
+   - Preserves audit trails in `quarantine_manifest.json` with safe restoration and permanent purge.
 
 4. **Local Ollama AI Integration**:
-   - Connects to local Ollama (`http://localhost:11434`) using models like Gemma 4.
-   - Generates beginner-friendly explanations of security findings and summarizes privacy policies.
-   - **Fail-Closed Boundary**: The LLM is strictly advisory; deterministic scanning and blocking policies never depend on LLM availability.
+   - Strictly advisory explanations and privacy disclosure summaries.
+   - **Fail-Closed Boundary**: Scanning and enforcement never fail open or depend on LLM availability.
 
 ---
 
-## 📂 Repository Structure
+## 🧪 Verified Automated Test Coverage (111 / 111 Passed)
 
-```text
-AgentGuard/
-├── PROJECT_AUDIT.md            # Comprehensive defect audit & test execution record
-├── SECURITY.md                 # Security model, boundaries, & permissions justification
-├── ARCHITECTURE.md             # System architecture & sequence diagrams
-├── README.md                   # Installation & operating manual
-└── agentproof-local/
-    ├── app.py                  # Streamlit desktop dashboard (13 interactive sections)
-    ├── agentproof/             # Core Python security suite
-    │   ├── server.py           # FastAPI backend & companion endpoints
-    │   ├── risk_engine.py      # Deterministic 0-100 risk scoring engine
-    │   ├── website_scanner.py  # Network transport & credential form inspector
-    │   ├── cookie_analyzer.py  # Zero-knowledge cookie security analyzer
-    │   ├── permission_analyzer.py # Origin permission analyzer
-    │   ├── file_scanner.py     # Local file scanner & cryptographic hashing
-    │   ├── quarantine_manager.py # POSIX 0o700 quarantine vault & manifest
-    │   ├── ollama_service.py   # Local Ollama integration & policy summarizer
-    │   ├── notification_service.py # Alert dispatcher & rate-limiting cooldown
-    │   └── policy_engine.py    # Authoritative deterministic AI agent policy
-    ├── chrome-extension/       # Manifest V3 Chrome Extension
-    │   ├── manifest.json       # Extension permissions & declarations
-    │   ├── background/         # Service worker event listeners (nav & download)
-    │   ├── popup/              # Real-time popup inspection dashboard
-    │   ├── options/            # Protection rules & threshold configuration
-    │   ├── pages/              # Blocked and warning pages with override controls
-    │   ├── scanner/            # Web security analyzers
-    │   ├── risk/               # JS heuristic risk scoring engine
-    │   └── tests/              # 22 automated extension unit tests
-    ├── frontend/               # 3D interactive web portal & landing UI
-    └── tests/                  # 89 automated Python pytest unit & integration tests
+```bash
+============================= Test Execution Summary =============================
+Platform: macOS (Darwin) | Python 3.13 | Node.js v26.4.0
+
+1. Python Security Engine & Companion Tests:
+   tests/test_companion_api.py ......                                       [ 6%]
+   tests/test_cookie_analyzer.py ....                                       [11%]
+   tests/test_file_scanner.py ......                                        [17%]
+   tests/test_llm_client.py .........                                       [28%]
+   tests/test_llm_output.py .........                                       [38%]
+   tests/test_metrics.py ...                                                [41%]
+   tests/test_mock_tools.py ......                                          [48%]
+   tests/test_policy_engine.py .......                                      [56%]
+   tests/test_quarantine_manager.py .....                                   [61%]
+   tests/test_reporting.py ....                                             [66%]
+   tests/test_risk_engine.py .....                                          [71%]
+   tests/test_scenarios.py .......                                          [79%]
+   tests/test_server.py ......                                              [86%]
+   tests/test_ui_app.py .....                                               [92%]
+   tests/test_website_scanner.py .......                                    [100%]
+   >>> 89 passed in 1.78s (0 failed, 0 skipped)
+
+2. Chrome Extension Unit Tests:
+   ✔ Connection Scanner — Plain HTTP & Critical overrides                   [PASS]
+   ✔ Connection Scanner — Detects IP address hostnames and punycode         [PASS]
+   ✔ Cookie Scanner — Redacts sensitive cookie names (Zero-Knowledge)       [PASS]
+   ✔ Cookie Scanner — Flags missing Secure and HttpOnly flags               [PASS]
+   ✔ Cookie Scanner — Flags SameSite=None without Secure attribute          [PASS]
+   ✔ Download Protection — Intercepts deceptive double extensions           [PASS]
+   ✔ Domain Policy — Allowlist and Denylist evaluation                      [PASS]
+   ✔ Risk Engine — Deterministic score bands, overrides & deduplication     [PASS]
+   ✔ Reports Generator — Sanitized JSON and HTML exports                    [PASS]
+   >>> 22 passed in 49ms (0 failed, 0 skipped)
+
+TOTAL: 111 passed / 111 executed (100% Pass Rate)
+==================================================================================
 ```
 
 ---
 
-## ⚡ Quickstart & Installation
+## ⚡ Quickstart & Local Installation
 
 ### Prerequisites
 - **macOS** or **Linux**
 - **Python 3.10+** (Tested on Python 3.13)
 - **Node.js 18+** & npm
-- (Optional) [Ollama](https://ollama.com) running on `http://localhost:11434`
-
-### 1. Python Backend & Companion Setup
-```bash
-cd agentproof-local
-
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run Python test suite (89 passing tests)
-PYTHONPATH=. pytest
-```
-
-### 2. Chrome Extension Installation (Load Unpacked)
-1. Open Google Chrome and navigate to `chrome://extensions`.
-2. Enable **Developer mode** toggle in the top-right corner.
-3. Click **Load unpacked** in the top-left corner.
-4. Select the directory:
-   `/Users/shreyashbhosale/Desktop/AgentGuard/agentproof-local/chrome-extension`
-5. Pin **AgentProof** to your browser toolbar.
-6. Click the extension icon on any webpage to inspect security or click `⚙️` to configure protection modes.
-
-*(Alternatively, download the pre-packaged zip from `frontend/public/agentguard-chrome-extension.zip` and extract.)*
+- Google Chrome (for Manifest V3 extension)
+- (Optional) [Ollama](https://ollama.com) running locally for advisory AI explanations
 
 ---
 
-## 🚀 Running the Platform
+### Step 1: Clone Repository
+```bash
+git clone https://github.com/shreyash-bhosale/AgentGuard.git
+cd AgentGuard
+```
 
-### Terminal 1: FastAPI Local Companion API
+---
+
+### Step 2: Python Environment & Dependencies
+```bash
+cd agentproof-local
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Run Python test suite
+PYTHONPATH=. pytest tests/ -v
+```
+
+---
+
+### Step 3: Install Chrome Security Extension
+1. Open Google Chrome and enter `chrome://extensions` in the address bar.
+2. Toggle on **Developer mode** in the upper right corner.
+3. Click **Load unpacked** in the upper left corner.
+4. Select the directory:
+   ```text
+   AgentGuard/agentproof-local/chrome-extension
+   ```
+5. *(Alternatively, extract the pre-built zip from `agentproof-local/frontend/public/agentguard-chrome-extension.zip`)*.
+
+---
+
+### Step 4: Launch Local Services
+
+#### Terminal 1 — Local FastAPI Security Engine
 ```bash
 cd agentproof-local
 source .venv/bin/activate
 uvicorn agentproof.server:app --host 127.0.0.1 --port 8000
 ```
-- API Docs: `http://127.0.0.1:8000/docs`
-- Health check: `http://127.0.0.1:8000/api/health`
+- Interactive Swagger API: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Health Check: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
 
-### Terminal 2: Streamlit Security Companion Dashboard
+#### Terminal 2 — Streamlit Desktop Companion & Quarantine Vault
 ```bash
 cd agentproof-local
 source .venv/bin/activate
 streamlit run app.py --server.port 8501
 ```
-- Streamlit UI: `http://localhost:8501`
+- Desktop Companion: [http://127.0.0.1:8501](http://127.0.0.1:8501)
 
-### Terminal 3: 3D Frontend Portal
+#### Terminal 3 — React + Vite Web Portal
 ```bash
 cd agentproof-local/frontend
 npm install
 npm run dev -- --port 5173
 ```
-- Web Portal: `http://localhost:5173`
+- Web Application: [http://127.0.0.1:5173](http://127.0.0.1:5173)
 
 ---
 
-## 🧪 Testing Verification
+## 🔒 Security Principles & Invariants
 
-### Run Python Test Suite (89 Tests)
-```bash
-cd agentproof-local
-PYTHONPATH=. pytest tests/ -v
-```
-
-### Run Extension Test Suite (22 Tests)
-```bash
-cd agentproof-local/chrome-extension
-npm test
-```
-
-### Total Verified Test Coverage
-- **111 tests executed**
-- **111 passed**
-- **0 failed**, **0 skipped**
+- **Zero-Knowledge Privacy**: Cookie values, passwords, and authentication tokens are never read, stored, displayed, or transmitted.
+- **Fail-Closed Boundary**: Any unexpected network timeout, schema violation, or unapproved target triggers fail-closed denial.
+- **Critical Override Floor**: Passwords submitted over unencrypted HTTP force a minimum risk score of **75 / Critical** across both Python and JavaScript risk engines.
+- **Auditable POSIX `0o700` Containment**: Quarantined files are cryptographically validated using pre-move and post-move SHA-256 checksums to eliminate data corruption or accidental execution.
 
 ---
 
-## 🔒 Security Principles
+## 📜 License & Acknowledgments
 
-- **Zero Fabricated Scans**: Real operations calculate genuine cryptographic hashes, inspect live DOM elements, and query actual browser metadata.
-- **Fail-Closed**: In the event of parser error, network timeout, or offline LLM, actions fail closed and deterministic security rules remain active.
-- **Zero-Knowledge Privacy**: Cookie values, tokens, and passwords are never read or stored.
-- **Auditable Containment**: Quarantined files are cryptographically verified and restricted to POSIX `0o700`.
+This project is licensed under the [MIT License](LICENSE).
+Built for open-source AI agent security, privacy-first browser monitoring, and verified safe computing.
