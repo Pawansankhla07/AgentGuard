@@ -8,10 +8,9 @@ import { Footer } from "@/components/landing/Footer"
 import { LivePolicyPlayground } from "@/components/landing/LivePolicyPlayground"
 import { ChromeExtensionSection } from "@/components/landing/ChromeExtensionSection"
 import { LiveTestingView } from "@/components/testing/LiveTestingView"
-import { DemoVideoSection } from "@/components/landing/DemoVideoSection"
 import { StarfieldBackground } from "@/components/ui/StarfieldBackground"
 import { CosmicCursor } from "@/components/ui/CosmicCursor"
-import { ArrowLeft, Sparkles, Layers, Zap, Box, BookOpen, Users, Chrome, ShieldAlert, Video } from "lucide-react"
+import { ArrowLeft, Sparkles, Layers, Zap, Box, BookOpen, Users, Chrome, ShieldAlert } from "lucide-react"
 
 interface LandingPageProps {
   onOpenDashboard: () => void
@@ -59,38 +58,11 @@ export function LandingPage({
         {/* PAGE 1: SHORT START PAGE (Home View)                                  */}
         {/* ===================================================================== */}
         {activeTopic === "home" && (
-          <>
-            <HeroSection
-              onSelectTopic={handleSelectTopic}
-              onOpenDashboard={onOpenDashboard}
-              repoUrl={repoUrl}
-            />
-            <DemoVideoSection />
-          </>
-        )}
-
-        {/* ===================================================================== */}
-        {/* PAGE: DEMO VIDEO WALKTHROUGH                                          */}
-        {/* ===================================================================== */}
-        {activeTopic === "demo" && (
-          <div className="pt-28 pb-16">
-            <div className="mx-auto max-w-7xl px-6 md:px-10 mb-8 flex items-center justify-between">
-              <button
-                onClick={() => handleSelectTopic("home")}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#0A0C11] px-4 py-2 text-xs font-mono text-[#A3A9B7] hover:text-[#F5F7FC] hover:border-white/25 transition-all"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                <span>Return to Home</span>
-              </button>
-
-              <div className="inline-flex items-center gap-2 text-xs font-mono text-white border border-white/15 bg-white/5 px-3 py-1 rounded-full">
-                <Video className="h-4 w-4 text-white" />
-                <span>PAGE: ARCHITECTURE DEMO VIDEO</span>
-              </div>
-            </div>
-
-            <DemoVideoSection />
-          </div>
+          <HeroSection
+            onSelectTopic={handleSelectTopic}
+            onOpenDashboard={onOpenDashboard}
+            repoUrl={repoUrl}
+          />
         )}
 
         {/* ===================================================================== */}

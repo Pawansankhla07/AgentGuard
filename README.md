@@ -41,155 +41,146 @@
 
 ---
 
-### 2. Live Architecture Demo Video Player & Telemetry HUD
-> **URL**: [http://127.0.0.1:5173/?topic=demo](http://127.0.0.1:5173/?topic=demo)  
-> *Embedded video player with live timeline scrubbing, play/pause controls, speed selectors (1x, 1.5x, 2x), and 5 milestone chapter traces showing real-time network interception, password detection, and quarantine isolation.*
-<p align="center">
-  <img src="docs/assets/02_demo_video.png" alt="02 - Demo Video Player" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 3. Live Testing Workbench — Part A: Website Risk Engine
+### 2. Live Testing Workbench — Part A: Website Risk Engine
 > **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=websites](http://127.0.0.1:5173/?topic=testing&testTab=websites)  
 > *Test 1-click curated fixtures (Plain HTTP Login with Password Field, Secure HTTPS Bank, IDN Punycode Homograph, Raw IP Hostname) and live sliders evaluating 0–100 deterministic risk scores with automatic Critical Overrides.*
 <p align="center">
-  <img src="docs/assets/03_testing_website_risk.png" alt="03 - Testing Website Risk Engine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/03_testing_website_risk.png" alt="02 - Testing Website Risk Engine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 4. Live Testing Workbench — Part B: Zero-Knowledge Cookie Privacy
+### 3. Live Testing Workbench — Part B: Zero-Knowledge Cookie Privacy
 > **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=cookies](http://127.0.0.1:5173/?topic=testing&testTab=cookies)  
 > *Inspect session cookie security metadata (`Secure`, `HttpOnly`, `SameSite`). Enforces zero-knowledge privacy where raw cookie values are permanently masked as `[REDACTED_ZERO_KNOWLEDGE]`. Features 1-click cookie jar clearing.*
 <p align="center">
-  <img src="docs/assets/04_testing_cookie_privacy.png" alt="04 - Testing Cookie Privacy" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/04_testing_cookie_privacy.png" alt="03 - Testing Cookie Privacy" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 5. Live Testing Workbench — Part C: Site Sensor Permissions
+### 4. Live Testing Workbench — Part C: Site Sensor Permissions
 > **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=permissions](http://127.0.0.1:5173/?topic=testing&testTab=permissions)  
 > *Cycle camera, microphone, geolocation, clipboard, and notification permissions between Granted, Prompt, and Denied to calculate real-time Privacy Exposure Indices.*
 <p align="center">
-  <img src="docs/assets/05_testing_sensor_sandbox.png" alt="05 - Testing Sensor Permissions" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/05_testing_sensor_sandbox.png" alt="04 - Testing Sensor Permissions" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 6. Live Testing Workbench — Part D: File Scanner & Quarantine Vault
+### 5. Live Testing Workbench — Part D: File Scanner & Quarantine Vault
 > **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=files](http://127.0.0.1:5173/?topic=testing&testTab=files)  
 > *Inspect SHA-256 digests and magic header bytes of test threats (`tax_invoice_2026.pdf.exe`, `eicar_standard_test.com`) with 1-click simulated POSIX `0o700` vault isolation and reversible restore.*
 <p align="center">
-  <img src="docs/assets/06_testing_file_quarantine.png" alt="06 - Testing File Quarantine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/06_testing_file_quarantine.png" alt="05 - Testing File Quarantine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 7. Live Testing Workbench — Part E: 12 Adversarial AI Benchmarks
+### 6. Live Testing Workbench — Part E: 12 Adversarial AI Benchmarks
 > **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=scenarios](http://127.0.0.1:5173/?topic=testing&testTab=scenarios)  
 > *Examine how deterministic policy gates block prompt injection overrides, directory traversal (`../../etc/shadow`), SQL injection, shell command chaining, and disguised exfiltration.*
 <p align="center">
-  <img src="docs/assets/07_testing_adversarial_benchmarks.png" alt="07 - Testing Adversarial Benchmarks" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/07_testing_adversarial_benchmarks.png" alt="06 - Testing Adversarial Benchmarks" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 8. Interactive Policy Playground & Enforcement Simulator
+### 7. Interactive Policy Playground & Enforcement Simulator
 > **URL**: [http://127.0.0.1:5173/?topic=playground](http://127.0.0.1:5173/?topic=playground)  
 > *Test candidate action proposals against fail-closed deterministic policy gates in real time with side-by-side action diffs and rule violation explanations.*
 <p align="center">
-  <img src="docs/assets/08_policy_simulator.png" alt="08 - Policy Simulator" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/08_policy_simulator.png" alt="07 - Policy Simulator" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 9. 4-Stage Governance & Containment Architecture
+### 8. 4-Stage Governance & Containment Architecture
 > **URL**: [http://127.0.0.1:5173/?topic=governance](http://127.0.0.1:5173/?topic=governance)  
 > *Detailed architecture breakdown of Stage 1 (Threat Discovery), Stage 2 (Plain Language Explanations), Stage 3 (Target Remediation), and Stage 4 (Deterministic Verification).*
 <p align="center">
-  <img src="docs/assets/09_governance_pipeline.png" alt="09 - Governance Pipeline" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/09_governance_pipeline.png" alt="08 - Governance Pipeline" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 10. Chrome Security Extension Hub (Manifest V3)
+### 9. Chrome Security Extension Hub (Manifest V3)
 > **URL**: [http://127.0.0.1:5173/?topic=extension](http://127.0.0.1:5173/?topic=extension)  
 > *Step-by-step developer mode installation instructions, permission justifications, runtime policy configuration (Levels 1–4), and direct `.ZIP` package download.*
 <p align="center">
-  <img src="docs/assets/10_chrome_extension_guide.png" alt="10 - Chrome Extension Guide" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/10_chrome_extension_guide.png" alt="09 - Chrome Extension Guide" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 11. Developer Documentation & Python SDK Manual
+### 10. Developer Documentation & Python SDK Manual
 > **URL**: [http://127.0.0.1:5173/?topic=docs](http://127.0.0.1:5173/?topic=docs)  
 > *Comprehensive CLI quickstart, Python SDK usage examples, loopback REST API schemas, and architecture documentation.*
 <p align="center">
-  <img src="docs/assets/12_developer_docs.png" alt="11 - Developer Documentation" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/12_developer_docs.png" alt="10 - Developer Documentation" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 12. Localhost Dashboard Overview (Port 5173)
+### 11. Localhost Dashboard Overview (Port 5173)
 > **URL**: [http://127.0.0.1:5173/?page=overview](http://127.0.0.1:5173/?page=overview)  
 > *Comprehensive metrics dashboard displaying verified 100% policy accuracy, authorization rates, execution breakdown, and past evaluation run history.*
 <p align="center">
-  <img src="docs/assets/13_dashboard_overview.png" alt="12 - Dashboard Overview" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/13_dashboard_overview.png" alt="11 - Dashboard Overview" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 13. Evaluation Lab (Port 5173)
+### 12. Evaluation Lab (Port 5173)
 > **URL**: [http://127.0.0.1:5173/?page=lab](http://127.0.0.1:5173/?page=lab)  
 > *Evaluation workbench supporting both deterministic baseline and local Ollama LLM execution with customizable timeouts and scenario subsets.*
 <p align="center">
-  <img src="docs/assets/14_evaluation_lab.png" alt="13 - Evaluation Lab" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/14_evaluation_lab.png" alt="12 - Evaluation Lab" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 14. Scenario Explorer (Port 5173)
+### 13. Scenario Explorer (Port 5173)
 > **URL**: [http://127.0.0.1:5173/?page=scenarios](http://127.0.0.1:5173/?page=scenarios)  
 > *Inspect all registered benchmark scenarios and register custom adversarial scenarios into the active session sandbox.*
 <p align="center">
-  <img src="docs/assets/15_scenario_explorer.png" alt="14 - Scenario Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/15_scenario_explorer.png" alt="13 - Scenario Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 15. Results Explorer & Per-Scenario Traces (Port 5173)
+### 14. Results Explorer & Per-Scenario Traces (Port 5173)
 > **URL**: [http://127.0.0.1:5173/?page=results](http://127.0.0.1:5173/?page=results)  
 > *Granular result traces showing proposed vs expected actions, policy evaluation verdicts, rationale diffs, and simulated tool outputs.*
 <p align="center">
-  <img src="docs/assets/16_results_explorer.png" alt="15 - Results Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/16_results_explorer.png" alt="14 - Results Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 16. Security Analysis & Metric Distributions (Port 5173)
+### 15. Security Analysis & Metric Distributions (Port 5173)
 > **URL**: [http://127.0.0.1:5173/?page=analysis](http://127.0.0.1:5173/?page=analysis)  
 > *Category-level accuracy distributions, confusion matrices (Allowed vs Blocked), error breakdown, and duration latency graphs.*
 <p align="center">
-  <img src="docs/assets/17_security_analysis.png" alt="16 - Security Analysis" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/17_security_analysis.png" alt="15 - Security Analysis" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 17. Desktop Security Companion & Quarantine Vault (Port 8501)
+### 16. Desktop Security Companion & Quarantine Vault (Port 8501)
 > **URL**: [http://127.0.0.1:8501](http://127.0.0.1:8501)  
 > *Desktop Streamlit companion featuring 13 live modules: website scanning, cookie audits, permission assessment, local Ollama policy summarization, and POSIX `0o700` Quarantine Vault.*
 <p align="center">
-  <img src="docs/assets/18_desktop_companion_vault.png" alt="17 - Streamlit Quarantine Vault" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/18_desktop_companion_vault.png" alt="16 - Streamlit Quarantine Vault" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
 
-### 18. Local Security Engine Swagger OpenAPI Explorer (Port 8000)
+### 17. Local Security Engine Swagger OpenAPI Explorer (Port 8000)
 > **URL**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)  
 > *Interactive OpenAPI Swagger documentation for all companion endpoints (`/api/scan/website`, `/api/scan/file`, `/api/quarantine/*`, `/api/fixtures`, `/api/evaluate`).*
 <p align="center">
-  <img src="docs/assets/19_fastapi_swagger_docs.png" alt="18 - FastAPI Swagger OpenAPI" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
+  <img src="docs/assets/19_fastapi_swagger_docs.png" alt="17 - FastAPI Swagger OpenAPI" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 ---
