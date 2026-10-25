@@ -50,6 +50,12 @@ export function Footer({
               Playground
             </button>
             <button
+              onClick={() => onNavigate("extension")}
+              className="hover:text-[#F5F7FC] transition-colors"
+            >
+              Extension
+            </button>
+            <button
               onClick={() => onNavigate("studio")}
               className="hover:text-[#F5F7FC] transition-colors"
             >

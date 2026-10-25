@@ -14,6 +14,7 @@ import {
   BookOpen,
   Users,
   Cpu,
+  Chrome,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { Spotlight } from "@/components/ui/spotlight"
@@ -79,6 +80,13 @@ const TOPIC_SHORTCUTS: {
     icon: Zap,
     desc: "Test candidate action proposals against fail-closed deterministic gates.",
     badge: "Live Interactive",
+  },
+  {
+    id: "extension",
+    label: "CHROME EXTENSION",
+    icon: Chrome,
+    desc: "Real-time website login safety audit, HTTPS checks & heuristic risk scoring.",
+    badge: "Manifest V3",
   },
   {
     id: "studio",
@@ -292,7 +300,7 @@ export function HeroSection({
           </div>
 
           {/* Large, Prominent Animated Encrypt Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {TOPIC_SHORTCUTS.map((shortcut) => (
               <EncryptNavButton
                 key={shortcut.id}
