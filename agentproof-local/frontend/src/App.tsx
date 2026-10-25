@@ -10,6 +10,7 @@ import { ReportsView } from "@/components/reports/ReportsView"
 import { SettingsView } from "@/components/settings/SettingsView"
 import { PolicySimulatorView } from "@/components/policy/PolicySimulatorView"
 import { SecurityGlossaryView } from "@/components/glossary/SecurityGlossaryView"
+import { LiveTestingView } from "@/components/testing/LiveTestingView"
 import {
   fetchHealth,
   fetchModels,
@@ -26,14 +27,15 @@ import {
   ModelsInfo,
   ScenarioModel,
 } from "@/types"
+import { DEMO_REPORT, DEMO_RUNS_HISTORY, DEMO_SCENARIOS } from "@/lib/demoData"
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<string>("landing")
   const [health, setHealth] = useState<HealthInfo | null>(null)
   const [modelsInfo, setModelsInfo] = useState<ModelsInfo | null>(null)
-  const [scenarios, setScenarios] = useState<ScenarioModel[]>([])
-  const [latestReport, setLatestReport] = useState<EvaluationReport | null>(null)
-  const [runsHistory, setRunsHistory] = useState<EvaluationRunSummary[]>([])
+  const [scenarios, setScenarios] = useState<ScenarioModel[]>(DEMO_SCENARIOS)
+  const [latestReport, setLatestReport] = useState<EvaluationReport | null>(DEMO_REPORT)
+  const [runsHistory, setRunsHistory] = useState<EvaluationRunSummary[]>(DEMO_RUNS_HISTORY)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null)
@@ -64,17 +66,18 @@ export function App() {
         fetchScenarios().catch(() => []),
         fetchEvaluations().catch(() => []),
       ])
-      setScenarios(sc)
-      setRunsHistory(runs)
-
-      if (runs.length > 0 && !latestReport) {
+      if (sc && sc.length > 0) {
+        setScenarios(sc)
+      }
+      if (runs && runs.length > 0) {
+        setRunsHistory(runs)
         const detail = await fetchEvaluationDetail(runs[0].run_id).catch(() => null)
         if (detail) setLatestReport(detail)
       }
     } catch (err) {
       console.error("Failed to load initial data", err)
     }
-  }, [loadHealthAndModels, latestReport])
+  }, [loadHealthAndModels])
 
   useEffect(() => {
     loadData()
@@ -145,6 +148,11 @@ export function App() {
       {/* Landing Showcase Section */}
       {currentTab === "landing" && (
         <LandingPage onOpenDashboard={() => setCurrentTab("overview")} />
+      )}
+
+      {/* Live Testing Workbench & Fixtures */}
+      {currentTab === "testing" && (
+        <LiveTestingView />
       )}
 
       {/* Dashboard Overview */}

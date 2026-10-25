@@ -82,6 +82,13 @@ const TOPIC_SHORTCUTS: {
     badge: "Live Interactive",
   },
   {
+    id: "testing",
+    label: "LIVE TESTING",
+    icon: ShieldAlert,
+    desc: "Inspect curated security test data, cookies, sensors, file quarantine & 12 AI attack benchmarks.",
+    badge: "Interactive Data",
+  },
+  {
     id: "extension",
     label: "CHROME EXTENSION",
     icon: Chrome,
