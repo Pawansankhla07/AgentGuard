@@ -418,29 +418,20 @@ elif selected_page == "Website Scanner":
 
     # Quick Scenarios
     st.markdown("**Quick Test Targets:**")
+
+    def _set_ws_target(url_val: str, pwd_val: bool):
+        st.session_state["ws_url_input"] = url_val
+        st.session_state["ws_pwd_chk"] = pwd_val
+
     q_c1, q_c2, q_c3, q_c4 = st.columns(4)
     with q_c1:
-        if st.button("🔴 Insecure HTTP Login", use_container_width=True):
-            target_url = "http://insecure-login.org/auth"
-            has_pwd = True
-            st.session_state.ws_url_input = target_url
-            st.session_state.ws_pwd_chk = True
+        st.button("🔴 Insecure HTTP Login", use_container_width=True, on_click=_set_ws_target, args=("http://insecure-login.org/auth", True))
     with q_c2:
-        if st.button("🟢 Secure HTTPS Bank", use_container_width=True):
-            target_url = "https://safe-bank.com/portal"
-            has_pwd = True
-            st.session_state.ws_url_input = target_url
-            st.session_state.ws_pwd_chk = True
+        st.button("🟢 Secure HTTPS Bank", use_container_width=True, on_click=_set_ws_target, args=("https://safe-bank.com/portal", True))
     with q_c3:
-        if st.button("🟡 Punycode Lookalike", use_container_width=True):
-            target_url = "https://xn--pple-43d.com"
-            has_pwd = False
-            st.session_state.ws_url_input = target_url
+        st.button("🟡 Punycode Lookalike", use_container_width=True, on_click=_set_ws_target, args=("https://xn--pple-43d.com", False))
     with q_c4:
-        if st.button("🟠 Raw IP Hostname", use_container_width=True):
-            target_url = "http://192.168.1.100/admin"
-            has_pwd = False
-            st.session_state.ws_url_input = target_url
+        st.button("🟠 Raw IP Hostname", use_container_width=True, on_click=_set_ws_target, args=("http://192.168.1.100/admin", False))
 
     if st.button("🔍 Scan Current Website", type="primary", use_container_width=True):
         active_scanner = WebsiteScanner(
@@ -606,31 +597,24 @@ elif selected_page == "File Scanner & Quarantine":
     tab_fscan, tab_vault = st.tabs(["Local File Scanner", "Quarantine Vault"])
 
     with tab_fscan:
+        fixtures_dir = Path(__file__).resolve().parent / "data" / "fixtures"
+
+        def _set_file_fixture(p_name: str):
+            p = fixtures_dir / p_name
+            st.session_state["file_path_input"] = str(p.resolve())
+
         f_path_input = st.text_input("Local File Path to Scan", value="", key="file_path_input")
 
         st.markdown("**Load Controlled Security Test Fixtures:**")
         fix_c1, fix_c2, fix_c3, fix_c4 = st.columns(4)
-        fixtures_dir = Path(__file__).resolve().parent / "data" / "fixtures"
         with fix_c1:
-            if st.button("📄 Benign Text", use_container_width=True):
-                p = fixtures_dir / "sample_quarterly_report.txt"
-                st.session_state.file_path_input = str(p.resolve())
-                st.rerun()
+            st.button("📄 Benign Text", use_container_width=True, on_click=_set_file_fixture, args=("sample_quarterly_report.txt",))
         with fix_c2:
-            if st.button("⚠️ Double Ext (.pdf.exe)", use_container_width=True):
-                p = fixtures_dir / "invoice_march_2026.pdf.exe"
-                st.session_state.file_path_input = str(p.resolve())
-                st.rerun()
+            st.button("⚠️ Double Ext (.pdf.exe)", use_container_width=True, on_click=_set_file_fixture, args=("invoice_march_2026.pdf.exe",))
         with fix_c3:
-            if st.button("🎭 Header Mismatch (.png)", use_container_width=True):
-                p = fixtures_dir / "profile_picture.png"
-                st.session_state.file_path_input = str(p.resolve())
-                st.rerun()
+            st.button("🎭 Header Mismatch (.png)", use_container_width=True, on_click=_set_file_fixture, args=("profile_picture.png",))
         with fix_c4:
-            if st.button("🦠 EICAR Antivirus Test", use_container_width=True):
-                p = fixtures_dir / "eicar_standard_test.com"
-                st.session_state.file_path_input = str(p.resolve())
-                st.rerun()
+            st.button("🦠 EICAR Antivirus Test", use_container_width=True, on_click=_set_file_fixture, args=("eicar_standard_test.com",))
 
         target_file = st.session_state.get("file_path_input", "")
         if st.button("🔎 Scan Selected File", type="primary"):
