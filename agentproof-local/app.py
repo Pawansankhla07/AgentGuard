@@ -47,6 +47,9 @@ quarantine_dir = getattr(config, "quarantine_dir", "quarantine_vault")
 quarantine_manager = QuarantineManager(quarantine_dir)
 file_scanner = FileScanner()
 ollama_service = OllamaService()
+website_scanner = WebsiteScanner()
+cookie_analyzer = CookieAnalyzer()
+permission_analyzer = PermissionAnalyzer()
 
 # Page configuration
 st.set_page_config(
