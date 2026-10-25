@@ -193,9 +193,19 @@ export function ChromeExtensionSection() {
                 How to Add the Extension to Google Chrome
               </h3>
             </div>
-            <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-mono text-white">
-              <CheckCircle2 className="h-4 w-4" />
-              <span>Manifest V3 Ready</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="/agentguard-chrome-extension.zip"
+                download="agentguard-chrome-extension.zip"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-bold text-black shadow-[0_0_16px_rgba(255,255,255,0.3)] hover:bg-neutral-200 hover:scale-[1.02] transition-all"
+              >
+                <Download className="h-4 w-4 text-black" />
+                <span>Download Extension (.zip)</span>
+              </a>
+              <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-mono text-white">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>Manifest V3 Ready</span>
+              </div>
             </div>
           </div>
 
