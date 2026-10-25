@@ -43,7 +43,8 @@ from agentproof.file_scanner import FileScanner
 from agentproof.quarantine_manager import QuarantineManager
 from agentproof.ollama_service import OllamaService
 
-quarantine_manager = QuarantineManager(config.quarantine_dir)
+quarantine_dir = getattr(config, "quarantine_dir", "quarantine_vault")
+quarantine_manager = QuarantineManager(quarantine_dir)
 file_scanner = FileScanner()
 ollama_service = OllamaService()
 
