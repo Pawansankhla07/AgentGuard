@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Shield, Github, Menu, X, ArrowUpRight, Cpu } from "lucide-react"
 
-export type LandingTopic = "home" | "demo" | "governance" | "playground" | "testing" | "extension" | "studio" | "docs" | "about"
+export type LandingTopic = "home" | "demo" | "governance" | "playground" | "testing" | "extension" | "docs" | "about"
 
 interface NavbarProps {
   activeTopic: LandingTopic
@@ -17,7 +17,6 @@ const NAV_LINKS: { id: LandingTopic; label: string }[] = [
   { id: "governance", label: "Governance" },
   { id: "playground", label: "Policy Playground" },
   { id: "extension", label: "Chrome Extension" },
-  { id: "studio", label: "3D Studio" },
   { id: "docs", label: "Docs" },
   { id: "about", label: "About" },
 ]

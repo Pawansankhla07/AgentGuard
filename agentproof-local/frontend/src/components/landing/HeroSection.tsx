@@ -96,13 +96,6 @@ const TOPIC_SHORTCUTS: {
     badge: "Manifest V3",
   },
   {
-    id: "studio",
-    label: "3D STUDIO",
-    icon: Box,
-    desc: "Interactive Spline WebGL canvas & orbital robot inspection system.",
-    badge: "Full 3D WebGL",
-  },
-  {
     id: "docs",
     label: "DOCUMENTATION",
     icon: BookOpen,

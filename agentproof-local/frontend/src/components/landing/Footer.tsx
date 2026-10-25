@@ -56,10 +56,10 @@ export function Footer({
               Extension
             </button>
             <button
-              onClick={() => onNavigate("studio")}
+              onClick={() => onNavigate("testing")}
               className="hover:text-[#F5F7FC] transition-colors"
             >
-              3D Studio
+              Live Testing
             </button>
             <button
               onClick={() => onNavigate("docs")}
