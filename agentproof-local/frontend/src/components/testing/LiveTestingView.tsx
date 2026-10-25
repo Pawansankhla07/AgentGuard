@@ -49,7 +49,16 @@ interface WebsiteTestResult {
 }
 
 export function LiveTestingView() {
-  const [activeTab, setActiveTab] = useState<TestingTab>("websites")
+  const [activeTab, setActiveTab] = useState<TestingTab>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get("testTab") as TestingTab
+      if (tabParam && ["websites", "cookies", "permissions", "files", "scenarios"].includes(tabParam)) {
+        return tabParam
+      }
+    }
+    return "websites"
+  })
 
   // =========================================================================
   // TAB 1: WEBSITE RISK EVALUATOR STATE & LOGIC
