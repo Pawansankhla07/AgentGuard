@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentProof — Website Safety & Login Advisor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="ap-app">
+    <!-- Top Header -->
+    <header class="ap-topbar">
+      <div class="ap-brand">
+        <span class="ap-shield-icon">🛡️</span>
+        <div>
+          <h1 class="ap-title">AgentProof</h1>
+          <span class="ap-subtitle">Website Safety &amp; Login Advisor</span>
+        </div>
+      </div>
+      <div class="ap-header-actions">
+        <button id="btn-refresh" class="ap-icon-btn" title="Refresh analysis" aria-label="Refresh analysis">
+          🔄
+        </button>
+      </div>
+    </header>
+
+    <!-- Target Site Info Banner -->
+    <div class="ap-site-banner">
+      <div class="ap-site-details">
+        <span id="site-protocol-badge" class="ap-badge ap-badge-neutral">HTTPS</span>
+        <span id="site-hostname" class="ap-hostname" title="Current Hostname">Detecting page...</span>
+      </div>
+      <span id="scan-status-text" class="ap-status-pill">Ready to scan</span>
+    </div>
+
+    <!-- Main Risk Overview Card -->
+    <section class="ap-card ap-risk-card" aria-label="Risk assessment summary">
+      <div class="ap-dial-container">
+        <div class="ap-dial-wrapper">
+          <svg class="ap-dial-svg" viewBox="0 0 100 100">
+            <circle class="ap-dial-bg" cx="50" cy="50" r="42" />
+            <circle id="risk-dial-bar" class="ap-dial-fill" cx="50" cy="50" r="42" />
+          </svg>
+          <div class="ap-dial-text">
+            <span id="risk-score-value" class="ap-dial-score">--</span>
+            <span class="ap-dial-total">/100</span>
+          </div>
+        </div>
+        <div class="ap-dial-legend">
+          <div class="ap-legend-title">Estimated Risk:</div>
+          <div id="risk-level-badge" class="ap-level-badge ap-badge-neutral">Not Scanned</div>
+          <div class="ap-legend-subtext">Deterministic Heuristic Assessment</div>
+        </div>
+      </div>
+
+      <!-- Critical Override Callout if triggered -->
+      <div id="critical-override-banner" class="ap-callout ap-callout-critical hidden">
+        <strong>⚠️ Critical Warning Override Active:</strong>
+        <span id="critical-override-text"></span>
+      </div>
+
+      <!-- Official Recommendation Box -->
+      <div class="ap-recommendation-box">
+        <div class="ap-rec-header">
+          <span>Official Login Recommendation:</span>
+        </div>
+        <p id="recommendation-text" class="ap-rec-body">
+          Run a scan on this website to evaluate connection security, credential forms, cookies, and privacy practices.
+        </p>
+      </div>
+    </section>
+
+    <!-- Quick Action Scan Bar -->
+    <div class="ap-action-bar" role="toolbar" aria-label="Security scans">
+      <button id="btn-scan-all" class="ap-btn ap-btn-primary" title="Execute all security scans">
+        ⚡ Full Scan
+      </button>
+      <button id="btn-scan-connection" class="ap-btn ap-btn-secondary" title="Scan connection & forms">
+        🔍 Connection
+      </button>
+      <button id="btn-scan-cookies" class="ap-btn ap-btn-secondary" title="Inspect cookie security flags">
+        🍪 Cookies
+      </button>
+      <button id="btn-scan-perms" class="ap-btn ap-btn-secondary" title="Check browser permissions">
+        🔒 Permissions
+      </button>
+      <button id="btn-scan-privacy" class="ap-btn ap-btn-secondary" title="Analyse privacy policy text">
+        📜 Privacy
+      </button>
+    </div>
+
+    <!-- Permission Request Explainer (Contextual) -->
+    <div id="cookie-perm-notice" class="ap-callout ap-callout-info hidden">
+      <span>ℹ️ <strong>Cookie Audit Permission:</strong> Click "Allow" on the Chrome prompt to inspect security attributes (Secure, HttpOnly, SameSite) for this specific site. <em>Cookie values are never read, stored, or transmitted.</em></span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="ap-tabs" role="tablist">
+      <button class="ap-tab active" data-tab="tab-findings" role="tab" aria-selected="true">Findings (<span id="findings-count">0</span>)</button>
+      <button class="ap-tab" data-tab="tab-connection" role="tab" aria-selected="false">Connection</button>
+      <button class="ap-tab" data-tab="tab-cookies" role="tab" aria-selected="false">Cookies</button>
+      <button class="ap-tab" data-tab="tab-permissions" role="tab" aria-selected="false">Permissions</button>
+      <button class="ap-tab" data-tab="tab-privacy" role="tab" aria-selected="false">Privacy</button>
+      <button class="ap-tab" data-tab="tab-ai" role="tab" aria-selected="false">Local AI</button>
+    </nav>
+
+    <!-- Tab Contents Container -->
+    <main class="ap-tab-contents">
+      <!-- 1. Findings Tab -->
+      <section id="tab-findings" class="ap-tab-pane active" role="tabpanel">
+        <div id="findings-list" class="ap-findings-list">
+          <div class="ap-empty-state">
+            <span class="ap-empty-icon">🛡️</span>
+            <p>No scans executed yet. Click <strong>Full Scan</strong> or any individual check above.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Connection Tab -->
+      <section id="tab-connection" class="ap-tab-pane" role="tabpanel">
+        <div class="ap-card">
+          <h3 class="ap-card-title">Transport &amp; Form Security</h3>
+          <div id="connection-content" class="ap-details-box">
+            <div class="ap-unscanned-notice">Connection not checked yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Cookies Tab -->
+      <section id="tab-cookies" class="ap-tab-pane" role="tabpanel">
+        <div class="ap-card">
+          <div class="ap-card-header-row">
+            <h3 class="ap-card-title">Cookie Metadata Audit</h3>
+            <span class="ap-privacy-guarantee">🛡️ Zero Value Storage</span>
+          </div>
+          <div id="cookies-content" class="ap-details-box">
+            <div class="ap-unscanned-notice">Click "Check Cookies" to inspect cookie security flags for this origin.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Permissions Tab -->
+      <section id="tab-permissions" class="ap-tab-pane" role="tabpanel">
+        <div class="ap-card">
+          <h3 class="ap-card-title">Origin Permissions &amp; Privacy Impact</h3>
+          <div id="permissions-content" class="ap-details-box">
+            <div class="ap-unscanned-notice">Site permissions not inspected yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Privacy Tab -->
+      <section id="tab-privacy" class="ap-tab-pane" role="tabpanel">
+        <div class="ap-card">
+          <h3 class="ap-card-title">Privacy Policy &amp; Terms Disclosures</h3>
+          <div id="privacy-content" class="ap-details-box">
+            <div class="ap-unscanned-notice">Privacy policy not analyzed yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Local AI Tab -->
+      <section id="tab-ai" class="ap-tab-pane" role="tabpanel">
+        <div class="ap-card">
+          <div class="ap-card-header-row">
+            <h3 class="ap-card-title">Local Ollama Security Summary</h3>
+            <span id="ollama-status-tag" class="ap-badge ap-badge-neutral">Checking Ollama...</span>
+          </div>
+          <p class="ap-ai-desc">
+            Summarizes already-collected findings locally with Gemma 4 or your configured Ollama model.
+            <strong>The deterministic risk engine remains authoritative.</strong>
+          </p>
+          <button id="btn-generate-ai" class="ap-btn ap-btn-primary" style="margin-bottom: 12px;">
+            🤖 Generate Local AI Summary
+          </button>
+          <div id="ai-summary-output" class="ap-ai-box">
+            Click "Generate Local AI Summary" to synthesize a concise briefing.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Export & Telemetry Footer -->
+    <footer class="ap-footer">
+      <div class="ap-coverage-info">
+        <span class="ap-coverage-label">Scan Coverage:</span>
+        <span id="coverage-badges" class="ap-coverage-badges">
+          <span class="ap-cov-dot" title="Connection: Not Checked" id="cov-conn">Conn</span>
+          <span class="ap-cov-dot" title="Cookies: Not Checked" id="cov-cook">Cook</span>
+          <span class="ap-cov-dot" title="Permissions: Not Checked" id="cov-perm">Perm</span>
+          <span class="ap-cov-dot" title="Privacy: Not Checked" id="cov-priv">Priv</span>
+        </span>
+      </div>
+      <div class="ap-export-actions">
+        <button id="btn-export-json" class="ap-btn ap-btn-sm" title="Download sanitized JSON audit report">
+          ⬇️ JSON
+        </button>
+        <button id="btn-export-html" class="ap-btn ap-btn-sm" title="Download standalone HTML report">
+          ⬇️ HTML
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

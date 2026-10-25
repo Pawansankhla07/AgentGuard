@@ -1,0 +1,8 @@
+streamlit
+requests
+pydantic
+pytest
+fastapi
+uvicorn
+httpx
+pandas

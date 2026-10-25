@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Node dependencies & build output
+node_modules/
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# macOS files
+.DS_Store
+
+# Streamlit
+.streamlit/
+
+# Generated evaluation reports
+reports/*.json
+reports/*.csv
+reports/*.md
+!reports/.gitkeep
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,9 @@
+{
+  "name": "agentproof-chrome-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AgentProof — Website Safety & Login Advisor Chrome Extension",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}
