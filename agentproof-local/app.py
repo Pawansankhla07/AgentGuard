@@ -604,25 +604,28 @@ elif selected_page == "File Scanner & Quarantine":
     with tab_fscan:
         f_path_input = st.text_input("Local File Path to Scan", value="", key="file_path_input")
 
-        st.markdown("**Generate & Test Controlled Fixtures:**")
-        fix_c1, fix_c2, fix_c3 = st.columns(3)
+        st.markdown("**Load Controlled Security Test Fixtures:**")
+        fix_c1, fix_c2, fix_c3, fix_c4 = st.columns(4)
+        fixtures_dir = Path(__file__).resolve().parent / "data" / "fixtures"
         with fix_c1:
-            if st.button("📄 Test Benign File", use_container_width=True):
-                tmp_f = Path("scratch_benign.txt")
-                tmp_f.write_text("Safe document payload.")
-                st.session_state.file_path_input = str(tmp_f.resolve())
+            if st.button("📄 Benign Text", use_container_width=True):
+                p = fixtures_dir / "sample_quarterly_report.txt"
+                st.session_state.file_path_input = str(p.resolve())
                 st.rerun()
         with fix_c2:
-            if st.button("⚠️ Test Double Ext (.pdf.exe)", use_container_width=True):
-                tmp_f = Path("invoice.pdf.exe")
-                tmp_f.write_bytes(b"MZ\x90\x00executable")
-                st.session_state.file_path_input = str(tmp_f.resolve())
+            if st.button("⚠️ Double Ext (.pdf.exe)", use_container_width=True):
+                p = fixtures_dir / "invoice_march_2026.pdf.exe"
+                st.session_state.file_path_input = str(p.resolve())
                 st.rerun()
         with fix_c3:
-            if st.button("🦠 Test EICAR Fixture", use_container_width=True):
-                tmp_f = Path("eicar_test.com")
-                tmp_f.write_bytes(b"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*")
-                st.session_state.file_path_input = str(tmp_f.resolve())
+            if st.button("🎭 Header Mismatch (.png)", use_container_width=True):
+                p = fixtures_dir / "profile_picture.png"
+                st.session_state.file_path_input = str(p.resolve())
+                st.rerun()
+        with fix_c4:
+            if st.button("🦠 EICAR Antivirus Test", use_container_width=True):
+                p = fixtures_dir / "eicar_standard_test.com"
+                st.session_state.file_path_input = str(p.resolve())
                 st.rerun()
 
         target_file = st.session_state.get("file_path_input", "")

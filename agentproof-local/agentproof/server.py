@@ -92,6 +92,22 @@ def get_scenarios(category: Optional[str] = Query(default=None)) -> list[dict[st
     return all_scenarios
 
 
+@app.get("/api/fixtures")
+def get_security_fixtures() -> dict[str, Any]:
+    """Return catalog of curated security test fixtures and presets."""
+    import json
+    from pathlib import Path
+    fixtures_path = Path(__file__).resolve().parent.parent / "data" / "security_test_fixtures.json"
+    if fixtures_path.exists():
+        try:
+            with open(fixtures_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"websites": [], "cookies": [], "permissions": [], "privacy_policies": [], "file_fixtures": []}
+
+
+
 @app.post("/api/scenarios/custom")
 def add_custom_scenario(payload: dict[str, Any]) -> dict[str, Any]:
     """Validate and add a temporary custom scenario to session memory."""

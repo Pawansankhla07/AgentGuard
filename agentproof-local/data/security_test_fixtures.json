@@ -1,0 +1,244 @@
+{
+  "description": "AgentProof Local Security Suite - Curated Test Data & Controlled Fixtures",
+  "version": "1.0.0",
+  "websites": [
+    {
+      "id": "benign-https-bank",
+      "name": "Secure Banking Portal (Clean / Low Risk)",
+      "url": "https://secure.bank-example.com/login",
+      "is_https": true,
+      "dom_forms": [
+        {
+          "action": "https://secure.bank-example.com/api/v1/auth",
+          "method": "POST",
+          "hasPasswordField": true
+        }
+      ],
+      "is_mixed_content": false,
+      "expected_level": "Low",
+      "expected_score_max": 10,
+      "description": "Standard encrypted TLS transport submitting credentials over HTTPS to matching origin."
+    },
+    {
+      "id": "critical-http-password",
+      "name": "Insecure Login over Plain HTTP (Critical Override)",
+      "url": "http://insecure-portal.org/login.php",
+      "is_https": false,
+      "dom_forms": [
+        {
+          "action": "http://insecure-portal.org/submit",
+          "method": "POST",
+          "hasPasswordField": true
+        }
+      ],
+      "is_mixed_content": false,
+      "expected_level": "Critical",
+      "expected_score_min": 75,
+      "description": "Password field submitting credentials over unencrypted HTTP transport. Triggers automatic critical override."
+    },
+    {
+      "id": "punycode-homograph",
+      "name": "IDN Punycode Homograph Lookalike",
+      "url": "https://xn--pple-43d.com/store/checkout",
+      "is_https": true,
+      "dom_forms": [],
+      "is_mixed_content": false,
+      "expected_level": "Medium",
+      "expected_score_min": 25,
+      "description": "Punycode prefix 'xn--' indicating internationalized lookalike domain mimicking a brand."
+    },
+    {
+      "id": "raw-ip-address",
+      "name": "Direct IP Address Literal Hostname",
+      "url": "http://192.168.1.100/admin/settings",
+      "is_https": false,
+      "dom_forms": [],
+      "is_mixed_content": false,
+      "expected_level": "High",
+      "expected_score_min": 45,
+      "description": "Direct IPv4 literal address instead of registered domain name on plain HTTP."
+    },
+    {
+      "id": "mixed-content-subresources",
+      "name": "E-Commerce Page with Insecure Mixed Content",
+      "url": "https://shop-example.com/cart",
+      "is_https": true,
+      "dom_forms": [],
+      "is_mixed_content": true,
+      "expected_level": "Medium",
+      "expected_score_min": 18,
+      "description": "Secure HTTPS parent frame loading active or passive subresources over unencrypted HTTP."
+    },
+    {
+      "id": "denylist-phishing-target",
+      "name": "Known Denylist Phishing Domain",
+      "url": "https://malicious-site.top/account-verify",
+      "is_https": true,
+      "dom_forms": [],
+      "is_mixed_content": false,
+      "expected_level": "Critical",
+      "expected_score_min": 75,
+      "description": "Hostname matching user-configured local threat denylist."
+    }
+  ],
+  "cookies": [
+    {
+      "id": "compliant-banking-cookies",
+      "name": "Hardened Banking Session (Fully Compliant)",
+      "is_https": true,
+      "origin": "https://secure.bank-example.com",
+      "cookies": [
+        {
+          "name": "session_id",
+          "domain": "secure.bank-example.com",
+          "path": "/",
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "strict",
+          "session": true
+        },
+        {
+          "name": "__Host-auth_token",
+          "domain": "secure.bank-example.com",
+          "path": "/",
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "strict",
+          "hostOnly": true
+        }
+      ],
+      "expected_level": "Low",
+      "description": "All sensitive cookies have Secure, HttpOnly, and SameSite=Strict configured."
+    },
+    {
+      "id": "vulnerable-session-token",
+      "name": "Insecure Session Token (Missing Secure & HttpOnly)",
+      "is_https": true,
+      "origin": "https://portal.example.com",
+      "cookies": [
+        {
+          "name": "auth_token",
+          "domain": "portal.example.com",
+          "path": "/",
+          "secure": false,
+          "httpOnly": false,
+          "sameSite": "lax",
+          "session": false
+        }
+      ],
+      "expected_level": "High",
+      "description": "Authentication token missing Secure flag on HTTPS and readable via document.cookie JavaScript."
+    },
+    {
+      "id": "samesite-none-insecure",
+      "name": "SameSite=None Without Secure Attribute",
+      "is_https": true,
+      "origin": "https://adnetwork.example.com",
+      "cookies": [
+        {
+          "name": "tracking_id",
+          "domain": "adnetwork.example.com",
+          "path": "/",
+          "secure": false,
+          "httpOnly": false,
+          "sameSite": "none",
+          "session": false
+        }
+      ],
+      "expected_level": "Medium",
+      "description": "Cookie set with SameSite=None but lacking Secure flag; rejected by modern browser cookie policies."
+    }
+  ],
+  "permissions": [
+    {
+      "id": "surveillance-grants",
+      "name": "Aggressive Sensor Grants (High Privacy Risk)",
+      "origin": "https://untrusted-stream.xyz",
+      "is_https": true,
+      "permissions": {
+        "camera": "granted",
+        "microphone": "granted",
+        "geolocation": "granted",
+        "clipboard-read": "granted",
+        "notifications": "granted"
+      },
+      "expected_level": "Critical",
+      "description": "Full access to camera, microphone, physical coordinates, and clipboard."
+    },
+    {
+      "id": "least-privilege",
+      "name": "Minimal Privilege Baseline (Low Risk)",
+      "origin": "https://docs-reader.example.com",
+      "is_https": true,
+      "permissions": {
+        "camera": "denied",
+        "microphone": "denied",
+        "geolocation": "denied",
+        "clipboard-read": "prompt",
+        "notifications": "prompt"
+      },
+      "expected_level": "Low",
+      "description": "Sensors blocked or set to explicit user prompt."
+    }
+  ],
+  "privacy_policies": [
+    {
+      "id": "gdpr-compliant-policy",
+      "name": "Transparent Data-Minimizing Privacy Policy",
+      "policy_text": "We collect only your account email and hashed credentials solely to deliver the service. We do not sell, rent, or trade your personal data with third-party advertising networks. In accordance with GDPR and CCPA, you retain full rights to request complete data export and permanent account deletion at any time by emailing privacy@example.com. All backups are purged within 30 days of account closure.",
+      "summary_points": [
+        "Minimal data collection (email only)",
+        "Zero third-party advertising sharing",
+        "Explicit user data deletion rights and 30-day purge cycle"
+      ]
+    },
+    {
+      "id": "invasive-broker-policy",
+      "name": "Predatory Data Broker Privacy Policy",
+      "policy_text": "By accessing our website, you grant us an irrevocable, perpetual, royalty-free license to collect, process, and monetize your browsing history, GPS location telemetry, device identifiers, and social contacts. We share and sell aggregated and de-anonymized user profiles to commercial data brokers, marketing partners, and credit evaluation agencies. Data deletion requests are subject to discretionary review and user profiles are retained indefinitely in cold storage archives.",
+      "summary_points": [
+        "Extensive invasive tracking (GPS, browsing history, device IDs)",
+        "Commercial monetization and sale to data brokers",
+        "Indefinite data retention with discretionary deletion requests"
+      ]
+    }
+  ],
+  "file_fixtures": [
+    {
+      "id": "fixture-benign-txt",
+      "filename": "quarterly_budget.txt",
+      "type": "text/plain",
+      "content_type": "ascii",
+      "expected_threat_level": "Clean",
+      "expected_score": 0,
+      "description": "Harmless plain UTF-8 text document with no executable code."
+    },
+    {
+      "id": "fixture-double-ext",
+      "filename": "tax_invoice_2026.pdf.exe",
+      "type": "application/x-msdownload",
+      "content_type": "binary_pe",
+      "expected_threat_level": "Critical",
+      "expected_score_min": 75,
+      "description": "Deceptive double extension masquerading as PDF document while executing as binary PE."
+    },
+    {
+      "id": "fixture-magic-mismatch",
+      "filename": "executive_headshot.png",
+      "type": "application/octet-stream",
+      "content_type": "binary_pe",
+      "expected_threat_level": "High",
+      "expected_score_min": 60,
+      "description": "File with image extension (.png) whose binary magic bytes header starts with 'MZ' (Windows Executable)."
+    },
+    {
+      "id": "fixture-eicar-antivirus",
+      "filename": "eicar_standard_test.com",
+      "type": "text/plain",
+      "content_type": "eicar_string",
+      "expected_threat_level": "Critical",
+      "expected_score": 100,
+      "description": "Official standard EICAR harmless antivirus verification string used to test quarantine vaults."
+    }
+  ]
+}
