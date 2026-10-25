@@ -17,6 +17,8 @@ interface LandingPageProps {
   repoUrl?: string
 }
 
+const VALID_TOPICS: LandingTopic[] = ["home", "testing", "governance", "playground", "extension", "docs", "about"]
+
 export function LandingPage({
   onOpenDashboard,
   repoUrl = "https://github.com/shreyash-bhosale/AgentGuard",
@@ -25,13 +27,28 @@ export function LandingPage({
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search)
       const topic = params.get("topic") as LandingTopic
-      if (topic) return topic
+      if (topic && VALID_TOPICS.includes(topic)) return topic
+      if (topic && !VALID_TOPICS.includes(topic)) {
+        params.delete("topic")
+        const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : "")
+        window.history.replaceState({}, "", newUrl)
+      }
     }
     return "home"
   })
 
   const handleSelectTopic = (topic: LandingTopic) => {
     setActiveTopic(topic)
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (topic === "home") {
+        params.delete("topic")
+      } else {
+        params.set("topic", topic)
+      }
+      const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : "")
+      window.history.replaceState({}, "", newUrl)
+    }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
