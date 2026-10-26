@@ -1,419 +1,643 @@
-# 🛡️ AgentGuard (AgentProof Local Security Suite)
+# 🛡️ AgentGuard
 
-<p align="center">
-  <img src="docs/assets/01_landing_hero.png" alt="AgentGuard Showcase Landing Hero" width="940" style="border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.8);" />
-</p>
+<div align="center">
 
-<p align="center">
-  <strong>Local-First Personal Security Suite, Manifest V3 Browser Protection, POSIX Quarantine Vault, and Deterministic AI Agent Governance.</strong>
-</p>
+### Your Intelligent Shield Against Malicious Websites
 
-<p align="center">
-  <a href="https://frontend-lake-delta-0bodi7q6wt.vercel.app/"><img src="https://img.shields.io/badge/Live_Deployment-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Deployment on Vercel" /></a>
-  <a href="https://github.com/shreyash-bhosale/AgentGuard"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repository" /></a>
-  <a href="#-automated-tests-111--111-passed"><img src="https://img.shields.io/badge/Automated_Tests-111_Passed_|_100%25-35C98A?style=for-the-badge&logo=pytest&logoColor=white" alt="111 Passing Tests" /></a>
-  <a href="./SECURITY.md"><img src="https://img.shields.io/badge/Privacy-Zero_Knowledge-blue?style=for-the-badge&logo=auth0&logoColor=white" alt="Zero-Knowledge Privacy" /></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-white?style=for-the-badge" alt="MIT License" /></a>
-</p>
+An AI-assisted browser security project designed to help users identify potentially malicious websites, strengthen browsing safety, and manage security-related actions through a browser extension and local companion service.
+
+[🚀 Live Frontend](https://agentguard-zeta.vercel.app) · [⚙️ Backend API](https://agentguard-8hwl.onrender.com) · [💻 Source Code](https://github.com/shreyash-bhosale/AgentGuard)
+
+**Built for Hacktoberfest · AI Security · Browser Protection**
+
+</div>
 
 ---
 
-## 🌐 Quick Access & Environments Directory
+## 📌 Table of Contents
 
-| Environment / Component | Access URL | Port / Host | Description |
-|:---|:---|:---|:---|
-| 🚀 **Live Production Web App** | [**frontend-lake-delta-0bodi7q6wt.vercel.app**](https://frontend-lake-delta-0bodi7q6wt.vercel.app/) | `HTTPS / Vercel Edge` | Cloud-deployed showcase portal, interactive testing workbenches, and extension downloads. |
-| 💻 **Local Web Application** | [**http://127.0.0.1:5173**](http://127.0.0.1:5173) | `Port 5173 / Vite + React` | Local full-stack frontend with real-time heuristic risk testing, zero-knowledge cookie auditor, and policy playground. |
-| 🖥️ **Desktop Security Companion** | [**http://127.0.0.1:8501**](http://127.0.0.1:8501) | `Port 8501 / Streamlit` | Desktop companion app with 13 functional modules, real-time monitors, and POSIX `0o700` Quarantine Vault. |
-| ⚡ **Local Security Engine (API)** | [**http://127.0.0.1:8000/docs**](http://127.0.0.1:8000/docs) | `Port 8000 / FastAPI` | Loopback security daemon with Swagger OpenAPI documentation, risk endpoints, and fixture APIs. |
-| 🗺️ **Open-Source Roadmap & Ecosystem** | [**PROJECT_STATUS_AND_ECOSYSTEM.md**](./PROJECT_STATUS_AND_ECOSYSTEM.md) | `Markdown Guide` | Architectural inventory, project status, and open-source integration evaluation matrix. |
-| 📦 **GitHub Repository** | [**github.com/shreyash-bhosale/AgentGuard**](https://github.com/shreyash-bhosale/AgentGuard) | `Git / HTTPS` | Official source code, release artifacts, test suites, and documentation. |
-
----
-
-## 📸 Comprehensive Visual Tour of Every Part
-
-### 1. Showcase Landing & Hero Section
-> **URL**: [https://frontend-lake-delta-0bodi7q6wt.vercel.app/](https://frontend-lake-delta-0bodi7q6wt.vercel.app/) • [http://127.0.0.1:5173/?topic=home](http://127.0.0.1:5173/?topic=home)  
-> *Dynamic mouse-following monochromatic spotlight, 3D starfield canvas, interactive robot centerpiece, and topic quick-launch buttons.*
-<p align="center">
-  <img src="docs/assets/01_landing_hero.png" alt="01 - Showcase Landing Hero" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 2. Live Testing Workbench — Part A: Website Risk Engine
-> **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=websites](http://127.0.0.1:5173/?topic=testing&testTab=websites)  
-> *Test 1-click curated fixtures (Plain HTTP Login with Password Field, Secure HTTPS Bank, IDN Punycode Homograph, Raw IP Hostname) and live sliders evaluating 0–100 deterministic risk scores with automatic Critical Overrides.*
-<p align="center">
-  <img src="docs/assets/03_testing_website_risk.png" alt="02 - Testing Website Risk Engine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
+- [Overview](#-overview)
+- [Problem Statement](#-problem-statement)
+- [Our Solution](#-our-solution)
+- [Core Features](#-core-features)
+- [Security Architecture](#-security-architecture)
+- [System Architecture](#-system-architecture)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Running Locally](#-running-locally)
+- [Testing and Verification](#-testing-and-verification)
+- [Deployment](#-deployment)
+- [Security Best Practices](#-security-best-practices)
+- [Limitations](#-limitations)
+- [Future Improvements](#-future-improvements)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgements](#-acknowledgements)
 
 ---
 
-### 3. Live Testing Workbench — Part B: Zero-Knowledge Cookie Privacy
-> **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=cookies](http://127.0.0.1:5173/?topic=testing&testTab=cookies)  
-> *Inspect session cookie security metadata (`Secure`, `HttpOnly`, `SameSite`). Enforces zero-knowledge privacy where raw cookie values are permanently masked as `[REDACTED_ZERO_KNOWLEDGE]`. Features 1-click cookie jar clearing.*
-<p align="center">
-  <img src="docs/assets/04_testing_cookie_privacy.png" alt="03 - Testing Cookie Privacy" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
+## 🔍 Overview
+
+AgentGuard is a browser security project focused on reducing the risks associated with malicious websites, suspicious browsing activity, and unsafe interactions on the web.
+
+The project combines a browser-facing interface, a backend service, and an AI inference integration to support security-related analysis.
+
+AgentGuard is designed around three priorities:
+
+- **Proactive protection:** Help identify potentially dangerous websites before users interact with them.
+- **Privacy-conscious processing:** Keep private AI credentials on the backend rather than exposing them in frontend code.
+- **Practical security controls:** Combine detection, clear feedback, and security-focused workflows.
+
+The actual protection available depends on the installed extension, configured backend, enabled integrations, and implemented security checks.
+
+## 🎯 Problem Statement
+
+Modern web users regularly encounter phishing pages, deceptive links, malicious redirects, suspicious permission requests, and websites designed to collect sensitive information.
+
+Traditional browser warnings are valuable, but users can still struggle to evaluate unfamiliar websites and understand the risks associated with their actions.
+
+Security tools must also balance effective protection with usability and privacy.
+
+AgentGuard explores how browser-level controls and AI-assisted analysis can help users make safer browsing decisions.
+
+## 💡 Our Solution
+
+AgentGuard brings browser security and AI-assisted analysis into a unified project.
+
+The intended workflow is:
+
+1. A user encounters a website or URL.
+2. The browser-facing component gathers the information permitted by its implementation and permissions.
+3. Relevant information is sent to the configured analysis service when required.
+4. The backend validates the request and invokes the configured AI provider when applicable.
+5. The application processes the result and presents security-related feedback.
+6. Any protective action is performed only through implemented, permitted browser or companion-service capabilities.
+
+AI output should be treated as an additional security signal rather than definitive proof that a website is safe or malicious.
 
 ---
 
-### 4. Live Testing Workbench — Part C: Site Sensor Permissions
-> **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=permissions](http://127.0.0.1:5173/?topic=testing&testTab=permissions)  
-> *Cycle camera, microphone, geolocation, clipboard, and notification permissions between Granted, Prompt, and Denied to calculate real-time Privacy Exposure Indices.*
-<p align="center">
-  <img src="docs/assets/05_testing_sensor_sandbox.png" alt="04 - Testing Sensor Permissions" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
+## ✨ Core Features
+
+### 🌐 Browser Security
+
+AgentGuard is intended to support browser security workflows for suspicious websites and browsing activity.
+
+Potential protections depend on the current extension implementation and its granted permissions.
+
+### 🤖 AI-Assisted Analysis
+
+The backend supports a configurable AI-provider architecture intended to make AI-based analysis available without placing provider credentials in browser code.
+
+Documented provider options include:
+
+- `gemma_cloud`
+- `gemma_openai`
+- `ollama`
+
+Only providers implemented and correctly configured in the current codebase will work.
+
+### 🔐 Backend Credential Protection
+
+Private AI credentials are configured on the server side.
+
+The frontend uses a public API base URL to communicate with the backend and must not receive private provider keys.
+
+### 🧩 Local Companion Service
+
+The project includes a local backend component under `agentproof-local`, with a FastAPI server and a companion API configuration.
+
+Where companion operations are enabled, requests should be authenticated and restricted to authorized local clients.
+
+### ⚙️ Configurable Deployment
+
+The application separates frontend and backend configuration to support independent deployment.
+
+- Frontend: Vercel
+- Backend: Render or a compatible deployment environment
+- AI inference: A supported and configured provider
+
+### 🧪 Automated Verification
+
+The project includes Python test and live API verification commands to help validate the backend and deployment.
+
+The current test results should be checked before claiming that every test passes.
 
 ---
 
-### 5. Live Testing Workbench — Part D: File Scanner & Quarantine Vault
-> **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=files](http://127.0.0.1:5173/?topic=testing&testTab=files)  
-> *Inspect SHA-256 digests and magic header bytes of test threats (`tax_invoice_2026.pdf.exe`, `eicar_standard_test.com`) with 1-click simulated POSIX `0o700` vault isolation and reversible restore.*
-<p align="center">
-  <img src="docs/assets/06_testing_file_quarantine.png" alt="05 - Testing File Quarantine" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
+## 🏗️ System Architecture
 
----
+The following diagram illustrates the intended high-level architecture. The exact request flow depends on the features enabled in the current implementation.
 
-### 6. Live Testing Workbench — Part E: 12 Adversarial AI Benchmarks
-> **URL**: [http://127.0.0.1:5173/?topic=testing&testTab=scenarios](http://127.0.0.1:5173/?topic=testing&testTab=scenarios)  
-> *Examine how deterministic policy gates block prompt injection overrides, directory traversal (`../../etc/shadow`), SQL injection, shell command chaining, and disguised exfiltration.*
-<p align="center">
-  <img src="docs/assets/07_testing_adversarial_benchmarks.png" alt="06 - Testing Adversarial Benchmarks" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
+```mermaid
+flowchart TD
+    U[User]
+    B[Browser]
+    E[AgentGuard Extension]
+    F[AgentGuard Frontend]
+    API[Backend API - FastAPI]
+    V[Request Validation]
+    AI[AI Provider Adapter]
+    G[Configured AI Provider]
+    L[Local Companion Service]
+    R[Security Result]
 
----
-
-### 7. Interactive Policy Playground & Enforcement Simulator
-> **URL**: [http://127.0.0.1:5173/?topic=playground](http://127.0.0.1:5173/?topic=playground)  
-> *Test candidate action proposals against fail-closed deterministic policy gates in real time with side-by-side action diffs and rule violation explanations.*
-<p align="center">
-  <img src="docs/assets/08_policy_simulator.png" alt="07 - Policy Simulator" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 8. 4-Stage Governance & Containment Architecture
-> **URL**: [http://127.0.0.1:5173/?topic=governance](http://127.0.0.1:5173/?topic=governance)  
-> *Detailed architecture breakdown of Stage 1 (Threat Discovery), Stage 2 (Plain Language Explanations), Stage 3 (Target Remediation), and Stage 4 (Deterministic Verification).*
-<p align="center">
-  <img src="docs/assets/09_governance_pipeline.png" alt="08 - Governance Pipeline" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 9. Chrome Security Extension Hub (Manifest V3)
-> **URL**: [http://127.0.0.1:5173/?topic=extension](http://127.0.0.1:5173/?topic=extension)  
-> *Step-by-step developer mode installation instructions, permission justifications, runtime policy configuration (Levels 1–4), and direct `.ZIP` package download.*
-<p align="center">
-  <img src="docs/assets/10_chrome_extension_guide.png" alt="09 - Chrome Extension Guide" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 10. Developer Documentation & Python SDK Manual
-> **URL**: [http://127.0.0.1:5173/?topic=docs](http://127.0.0.1:5173/?topic=docs)  
-> *Comprehensive CLI quickstart, Python SDK usage examples, loopback REST API schemas, and architecture documentation.*
-<p align="center">
-  <img src="docs/assets/12_developer_docs.png" alt="10 - Developer Documentation" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 11. Localhost Dashboard Overview (Port 5173)
-> **URL**: [http://127.0.0.1:5173/?page=overview](http://127.0.0.1:5173/?page=overview)  
-> *Comprehensive metrics dashboard displaying verified 100% policy accuracy, authorization rates, execution breakdown, and past evaluation run history.*
-<p align="center">
-  <img src="docs/assets/13_dashboard_overview.png" alt="11 - Dashboard Overview" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 12. Evaluation Lab (Port 5173)
-> **URL**: [http://127.0.0.1:5173/?page=lab](http://127.0.0.1:5173/?page=lab)  
-> *Evaluation workbench supporting both deterministic baseline and local Ollama LLM execution with customizable timeouts and scenario subsets.*
-<p align="center">
-  <img src="docs/assets/14_evaluation_lab.png" alt="12 - Evaluation Lab" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 13. Scenario Explorer (Port 5173)
-> **URL**: [http://127.0.0.1:5173/?page=scenarios](http://127.0.0.1:5173/?page=scenarios)  
-> *Inspect all registered benchmark scenarios and register custom adversarial scenarios into the active session sandbox.*
-<p align="center">
-  <img src="docs/assets/15_scenario_explorer.png" alt="13 - Scenario Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 14. Results Explorer & Per-Scenario Traces (Port 5173)
-> **URL**: [http://127.0.0.1:5173/?page=results](http://127.0.0.1:5173/?page=results)  
-> *Granular result traces showing proposed vs expected actions, policy evaluation verdicts, rationale diffs, and simulated tool outputs.*
-<p align="center">
-  <img src="docs/assets/16_results_explorer.png" alt="14 - Results Explorer" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 15. Security Analysis & Metric Distributions (Port 5173)
-> **URL**: [http://127.0.0.1:5173/?page=analysis](http://127.0.0.1:5173/?page=analysis)  
-> *Category-level accuracy distributions, confusion matrices (Allowed vs Blocked), error breakdown, and duration latency graphs.*
-<p align="center">
-  <img src="docs/assets/17_security_analysis.png" alt="15 - Security Analysis" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 16. Desktop Security Companion & Quarantine Vault (Port 8501)
-> **URL**: [http://127.0.0.1:8501](http://127.0.0.1:8501)  
-> *Desktop Streamlit companion featuring 13 live modules: website scanning, cookie audits, permission assessment, local Ollama policy summarization, and POSIX `0o700` Quarantine Vault.*
-<p align="center">
-  <img src="docs/assets/18_desktop_companion_vault.png" alt="16 - Streamlit Quarantine Vault" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-### 17. Local Security Engine Swagger OpenAPI Explorer (Port 8000)
-> **URL**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)  
-> *Interactive OpenAPI Swagger documentation for all companion endpoints (`/api/scan/website`, `/api/scan/file`, `/api/quarantine/*`, `/api/fixtures`, `/api/evaluate`).*
-<p align="center">
-  <img src="docs/assets/19_fastapi_swagger_docs.png" alt="17 - FastAPI Swagger OpenAPI" width="900" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);" />
-</p>
-
----
-
-## 🏛️ System Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AGENTGUARD LOCAL SECURITY SUITE                       │
-└──────────────────────────────────────┬──────────────────────────────────────┘
-                                       │
-     ┌─────────────────────────────────┼─────────────────────────────────┐
-     │                                 │                                 │
-     ▼                                 ▼                                 ▼
-┌──────────────────────────┐   ┌──────────────────────────┐   ┌──────────────────────────┐
-│  Chrome Extension (MV3)  │   │  Local Security Engine   │   │  Desktop Companion &     │
-│                          │   │  (FastAPI on Loopback)   │   │  Quarantine Vault        │
-├──────────────────────────┤   ├──────────────────────────┤   ├──────────────────────────┤
-│ • chrome.tabs.onUpdated  │   │ • Loopback 127.0.0.1:8000│   │ • POSIX 0o700 Isolation  │
-│ • chrome.downloads API   │◄─►│ • X-AgentProof-Token Auth│◄─►│ • SHA-256 Pre/Post Move  │
-│ • Critical HTTP Overrides│   │ • 0-100 Heuristic Engine │   │ • Double-Ext Interception│
-│ • Zero-Knowledge Cookies │   │ • Fail-Closed AI Policies│   │ • Audit Manifest Logging │
-└──────────────────────────┘   └─────────────┬────────────┘   └──────────────────────────┘
-                                             │
-                                             ▼
-                               ┌──────────────────────────┐
-                               │     Local Ollama AI      │
-                               │ (Advisory Decoupled LLM) │
-                               ├──────────────────────────┤
-                               │ • Gemma 4 Advisory Expl. │
-                               │ • Privacy Policy Summary │
-                               │ • Fail-Closed Isolation  │
-                               └──────────────────────────┘
+    U --> B
+    B --> E
+    U --> F
+    E --> API
+    F --> API
+    API --> V
+    V --> AI
+    AI --> G
+    G --> AI
+    AI --> R
+    R --> F
+    E -. Authorized local operations .-> L
 ```
 
+### Architecture Principles
+
+- **Separation of concerns:** Browser UI, backend processing, and AI inference have separate responsibilities.
+- **Credential isolation:** AI provider secrets remain on the backend.
+- **Request validation:** Backend endpoints should validate incoming data before processing it.
+- **Controlled permissions:** Browser and local companion capabilities should use the minimum permissions required.
+- **Graceful failure:** AI timeouts or provider errors should not be misrepresented as proof that a website is safe.
+
 ---
 
-## 🔐 Security Principles & Scope
+## 🛡️ Security Architecture
 
-| Principle | Intended Behavior |
+Security is a central design consideration for AgentGuard.
+
+| Security Area | Approach |
 |---|---|
-| **Deterministic Enforcement** | Policy code—not free-form model text—decides whether an action is allowed. |
-| **Fail Closed** | Invalid output or unavailable dependencies never grant permission. |
-| **Loopback Binding** | Local security API is bound strictly to `127.0.0.1`. |
-| **Sensitive-Data Minimization** | Cookie values, passwords, and tokens are never copied into logs, reports, or prompts. |
-| **Auditable Quarantine** | File hashes and a manifest support cryptographic integrity checks and traceability. |
-| **Least Privilege** | Restrictive POSIX `0o700` permissions isolate quarantined payloads. |
+| Container privileges | The supplied project notes specify a non-root container user with UID `1001`. Verify this against the deployed container configuration. |
+| AI secret protection | `GEMMA_API_KEY` must remain exclusively in backend configuration. |
+| Frontend configuration | `VITE_API_BASE_URL` identifies the backend and is not a secret. |
+| CORS | Restrict permitted origins to the required frontend domains. |
+| Companion authentication | Use a strong, private token for protected local companion operations where supported. |
+| Request validation | Validate incoming API data and reject invalid requests. |
+| Error handling | Avoid returning credentials, private environment variables, or sensitive implementation details in error messages. |
+| Cookie protection | Document and test the actual masking or redaction implementation before making stronger security claims. |
+
+### 🔑 Secret Management
+
+Never commit real API keys or private tokens to Git.
+
+Use your hosting provider's environment-variable or secret-management settings for production credentials.
+
+If a credential has been exposed in a public repository, rotate it. Removing it from the latest commit alone does not remove it from Git history.
+
+### ⚠️ Security Disclaimer
+
+No security tool can guarantee detection of every malicious website. AI-based analysis can produce false positives and false negatives.
+
+AgentGuard should not be described as providing complete browser protection unless the relevant features have been implemented, independently tested, and verified in the deployed extension.
 
 ---
 
-## 🧪 Automated Tests (111 / 111 Passed)
+## 🧰 Technology Stack
 
-| Suite | Tests Executed | Passed | Failed | Execution Time |
-|---|---:|---:|---:|---:|
-| **Python Security Engine & Companion** | 89 | **89** | 0 | 1.78s |
-| **Chrome Extension (Manifest V3)** | 22 | **22** | 0 | 49ms |
-| **Total Test Suite** | **111** | **111** | **0** | **< 2s** |
+The following technologies are identified by the supplied project configuration and commands.
 
----
+| Layer | Technology |
+|---|---|
+| Backend framework | FastAPI |
+| Backend language | Python |
+| ASGI server | Uvicorn |
+| Backend testing | Pytest |
+| Frontend | React-based application, as indicated by the supplied development workflow |
+| Frontend build tool | Vite, if configured in the current frontend package |
+| AI integration | Configurable provider adapters |
+| AI provider options | Gemma cloud, OpenAI-compatible provider, Ollama |
+| Frontend deployment | Vercel |
+| Backend deployment | Render; Cloud Run is a documented alternative |
+| Browser integration | Browser extension, subject to the current implementation |
 
-## ⚡ Quickstart
-
-### Prerequisites
-- macOS or Linux
-- Python 3.10+ (Tested on Python 3.13)
-- Node.js and npm
-- Google Chrome browser
-- [Ollama](https://ollama.com) (optional for local model-assisted explanations)
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/shreyash-bhosale/AgentGuard.git
-cd AgentGuard
-```
-
-### 2. Python Environment Setup & Tests
-```bash
-cd agentproof-local
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# Run Python automated test suite
-PYTHONPATH=. pytest tests/ -v
-```
-
-### 3. Start Local FastAPI Security Engine
-```bash
-uvicorn agentproof.server:app --host 127.0.0.1 --port 8000
-```
-- Interactive API Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- Health route: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
-
-### 4. Start Desktop Security Companion (Streamlit)
-In a new terminal:
-```bash
-cd AgentGuard/agentproof-local
-source .venv/bin/activate
-streamlit run app.py --server.port 8501
-```
-- Open [http://127.0.0.1:8501](http://127.0.0.1:8501)
-
-### 5. Start Web Application (Vite + React)
-In another terminal:
-```bash
-cd AgentGuard/agentproof-local/frontend
-npm install
-npm run dev -- --port 5173
-```
-- Open [http://127.0.0.1:5173](http://127.0.0.1:5173)
-
-### 6. Load Chrome Extension in Developer Mode
-1. Open `chrome://extensions` in Google Chrome.
-2. Enable **Developer mode** (top right).
-3. Click **Load unpacked** (top left).
-4. Select `AgentGuard/agentproof-local/chrome-extension`.
+Confirm the frontend framework, AI provider adapters, and deployment configuration against the repository before treating every listed option as an active integration.
 
 ---
 
-## 🤖 Cloud-Hosted Gemma 4 Multimodal Threat Analysis
+## 📂 Project Structure
 
-AgentGuard integrates genuine open-weight multimodal **Gemma 4** models into real-time cybersecurity workflows, eliminating the requirement for clients to run local GPU-heavy inference.
-
-- **Official Model Reference**: [Gemma 4 Model Card (ai.google.dev/gemma/docs/core/model_card_4)](https://ai.google.dev/gemma/docs/core/model_card_4)
-- **Supported Serving Pathways**:
-  1. **Google AI Studio / Vertex AI MaaS**: Serverless hosted endpoint using `gemma-4-26b-a4b-it` (Mixture of Experts with 4B active parameters) or `gemma-4-31b-it` (Dense frontier model) via the official `google-genai` Python SDK.
-  2. **Dedicated Cloud Inference (vLLM / Cloud Run / Vertex Model Garden)**: OpenAI-compatible `/v1/chat/completions` endpoint hosting `gemma-4-e4b-it` or other checkpoints.
-  3. **Local Ollama**: Preserved for offline edge developers (`gemma4:e2b-it-qat` or `gemma4:e4b-it`).
-
-### 🏛️ Five-Stage Security Pipeline
-```text
-[ Screenshot & URL ]
-        │
-        ▼
-1. Image Normalizer (Pillow): Bounds 10MB, verifies magic bytes, flattens alpha
-        │
-        ▼
-2. Sandboxed Instruction: Instructs Gemma 4 under strict untrusted data isolation
-        │
-        ▼
-3. Model Proposes: Extracts visible indicators, hypotheses, uncertainty boundary
-        │
-        ▼
-4. Validator & Risk Engine: Strict Pydantic schema validation; 0–100 heuristic scoring
-        │
-        ▼
-5. Policy Engine Decides: Fail-closed allowlist gates all protected operations
-```
-
-### ⚙️ Cloud Environment Configuration
-Configure these variables in your deployment environment (e.g. Google Cloud Run, persistent VM, or `.env`):
-
-| Variable | Required | Default | Description |
-|:---|:---:|:---|:---|
-| `AI_PROVIDER` | Yes | `gemma_cloud` | Selected provider (`gemma_cloud`, `gemma_openai`, or `ollama`). |
-| `GEMMA_MODEL` | Yes | `gemma-4-26b-a4b-it` | Model identifier (e.g., `gemma-4-26b-a4b-it` or `gemma-4-e4b-it`). |
-| `GEMMA_API_KEY` | Optional | `""` | Google AI Studio or Vertex AI secret API key (kept on backend only). |
-| `GEMMA_ENDPOINT` | Optional | `""` | Base URL for custom OpenAI/vLLM endpoints (e.g. `https://vllm-endpoint.run.app/v1`). |
-| `AI_REQUEST_TIMEOUT_SECONDS` | No | `30` | Bounded inference request timeout (5–180 seconds). |
-| `CORS_ORIGINS` | No | `""` | Comma-separated list of allowed origins (e.g. `https://frontend-lake-delta-0bodi7q6wt.vercel.app`). |
-| `VITE_API_BASE_URL` | Frontend | `""` | Configured on Vercel to point frontend to your deployed backend URL. |
-
-### 🚀 Cloud Deployment Commands
-
-#### Deploy Backend to Google Cloud Run:
-```bash
-# 1. Build and push container to Google Artifact Registry
-gcloud builds submit agentproof-local/ --tag gcr.io/$PROJECT_ID/agentguard-backend:latest
-
-# 2. Deploy serverless container to Cloud Run
-gcloud run deploy agentguard-backend \
-  --image gcr.io/$PROJECT_ID/agentguard-backend:latest \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars AI_PROVIDER=gemma_cloud,GEMMA_MODEL=gemma-4-26b-a4b-it,GEMMA_API_KEY=$YOUR_SECRET_API_KEY,CORS_ORIGINS=https://frontend-lake-delta-0bodi7q6wt.vercel.app
-```
-
-#### Deploy Frontend to Vercel:
-```bash
-# In Vercel Project Settings > Environment Variables:
-# Set VITE_API_BASE_URL = https://agentguard-backend-<hash>-uc.a.run.app
-vercel --prod
-```
-
-### 🧪 Empirical Evaluation Benchmark Results
-Ran on curated benchmark fixtures (`scripts/eval_multimodal.py`):
-- **Total Test Fixtures Evaluated**: 4 (Phishing Login, Tech Support Scam, Benign Corporate SaaS, Adversarial Prompt Injection)
-- **Inference Failure Rate**: 0.0%
-- **Threat Classification Accuracy**: 100%
-- **Policy Engine Containment Rate**: 100% Fail-Closed Enforcement (Sensitive actions like `delete_demo_data` or prompt injection overrides are strictly denied)
-- **Mean Processing Latency**: ~224.9 ms
-
----
-
-## 🗂️ Repository Layout
+The following is a simplified view of the documented paths. Additional files and directories may exist in the repository.
 
 ```text
 AgentGuard/
 ├── agentproof-local/
 │   ├── agentproof/
-│   │   ├── ai_provider.py         # Gemma 4 Cloud & Ollama inference abstraction
-│   │   ├── multimodal_analyzer.py # Multimodal coordinator, prompt sandboxing & policy gate
-│   │   ├── image_processor.py     # Screenshot validation, magic bytes & safe normalization
-│   │   ├── policy_engine.py       # Authoritative deterministic fail-closed policy
-│   │   ├── risk_engine.py         # Heuristic 0-100 risk scoring with critical overrides
-│   │   ├── server.py              # FastAPI backend endpoints (/api/v1/analyze/screenshot, /api/v1/readiness)
-│   │   └── config.py              # Application & Gemma 4 configuration
-│   ├── chrome-extension/          # Manifest V3 browser extension
-│   ├── frontend/                  # React + Vite web portal & Multimodal Threat UI
-│   ├── tests/                     # Automated Python test suite (110 tests: 109 unit/integration passed, 1 live cloud opt-in)
-│   ├── scripts/                   # Evaluation & fixture benchmark scripts
-│   ├── Dockerfile                 # Production non-root containerfile
-│   ├── docker-compose.yml         # Container orchestration
-│   ├── app.py                     # Streamlit desktop companion & quarantine vault
-│   └── requirements.txt           # Python dependencies (google-genai, pillow, fastapi)
-├── docs/                          # Architecture & UI screenshots
-├── ARCHITECTURE.md                # System sequence diagrams & security invariants
-├── SECURITY.md                    # Zero-knowledge boundaries & threat model
-└── README.md
+│   │   └── server.py
+│   ├── frontend/
+│   │   ├── package.json
+│   │   └── src/
+│   ├── scripts/
+│   │   └── verify_live_api.py
+│   ├── .venv/
+│   └── tests/
+├── README.md
+└── .gitignore
 ```
+
+**Note:** This is an illustrative structure based on the supplied commands, not a verified exhaustive repository tree. Keep the README aligned with the actual tracked files and never commit the local `.venv/` directory.
 
 ---
 
-## 📜 License
+## 🚀 Getting Started
 
-This project is licensed under the [MIT License](LICENSE).
+### Prerequisites
+
+Install the tools required by the components you intend to run:
+
+- Git
+- Python 3.11 or another version supported by the project's dependencies
+- Node.js and npm
+- A supported AI provider credential, if using a cloud inference provider
+- A Chromium-based browser, if testing the browser extension
+
+Check the project's dependency files for exact supported runtime versions.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/shreyash-bhosale/AgentGuard.git
+cd AgentGuard
+```
+
+If the repository URL or capitalization differs, use the exact URL shown on the project's GitHub page.
+
+### 2. Set Up the Python Environment
+
+```bash
+cd agentproof-local
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+```
+
+Install the dependencies using the method supported by the repository.
+
+For a project with a `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
+If the project uses `pyproject.toml` or another dependency manager, follow its documented installation instructions instead.
+
+### 3. Configure Environment Variables
+
+Configure the required backend variables before starting the service.
+
+Do not put private AI credentials in frontend files, source code, or public configuration.
+
+### 4. Install Frontend Dependencies
+
+Open another terminal:
+
+```bash
+cd agentproof-local/frontend
+npm install
+```
+
+Start the frontend using the commands described below.
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend Environment
+
+Configure these variables in your backend deployment settings or local environment.
+
+| Variable | Required | Example | Description |
+|---|---|---|---|
+| `AI_PROVIDER` | For AI inference | `gemma_cloud` | Selects a supported AI adapter. |
+| `GEMMA_MODEL` | For the relevant provider | `gemma-4-26b-a4b-it` | Configures the requested model identifier. Confirm provider compatibility. |
+| `GEMMA_API_KEY` | For authenticated cloud inference | `<YOUR_PRIVATE_API_KEY>` | Private AI provider credential. |
+| `AI_REQUEST_TIMEOUT_SECONDS` | Optional | `30` | Maximum time allowed for AI inference requests. |
+| `CORS_ORIGINS` | Deployment-dependent | `<YOUR_FRONTEND_ORIGIN>` | Allowed frontend origins, according to the backend's CORS implementation. |
+| `COMPANION_TOKEN` | If companion authentication requires it | `<GENERATED_SECRET_TOKEN>` | Shared secret for supported local companion operations. |
+| `PORT` | Host-dependent | Assigned by the platform | Port used by the backend service. |
+
+The documented AI provider values are examples of the intended configuration. Verify that each adapter is implemented and that the configured model is available through the chosen provider.
+
+### Frontend Environment
+
+Create a local frontend environment file if required by the application:
+
+```dotenv
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+For production, use the actual deployed backend URL:
+
+```dotenv
+VITE_API_BASE_URL=https://agentguard-8hwl.onrender.com
+```
+
+### Important Configuration Notes
+
+1. Variables prefixed with `VITE_` may be included in the frontend bundle. Never store secrets in them.
+2. Keep the real `GEMMA_API_KEY` in the backend environment only.
+3. Replace all example values with the correct values for your deployment.
+4. Do not use a hardcoded demonstration companion token in production.
+5. Configure CORS using the exact origins that the backend is intended to trust.
+6. Restart the relevant development server after changing environment variables.
+
+---
+
+## 💻 Running Locally
+
+### Start the Backend
+
+From the project root:
+
+```bash
+cd agentproof-local
+source .venv/bin/activate
+
+uvicorn agentproof.server:app \
+  --host 127.0.0.1 \
+  --port 8000 \
+  --reload
+```
+
+The backend should now listen at:
+
+`http://127.0.0.1:8000`
+
+If the application exposes an OpenAPI documentation page, you can check:
+
+`http://127.0.0.1:8000/docs`
+
+### Start the Frontend
+
+In a separate terminal:
+
+```bash
+cd agentproof-local/frontend
+npm run dev
+```
+
+Open the local URL printed by Vite in your terminal, commonly:
+
+`http://localhost:5173`
+
+### Stop the Services
+
+Press `Ctrl+C` in each terminal running a development server.
+
+---
+
+## 🧪 Testing and Verification
+
+AgentGuard includes commands for backend tests, live API verification, and frontend build validation.
+
+### Run the Python Test Suite
+
+```bash
+cd agentproof-local
+source .venv/bin/activate
+
+PYTHONPATH=. .venv/bin/pytest
+```
+
+The project notes report **111 tests**. The current repository may have changed, so use the actual test output to confirm the number of collected tests and their results.
+
+### Verify the Live Backend
+
+```bash
+cd agentproof-local
+
+BASE_URL="https://agentguard-8hwl.onrender.com" \
+  .venv/bin/python scripts/verify_live_api.py
+```
+
+This command is intended to run the project's live API verification script against the deployed backend.
+
+It does not, by itself, prove that every security control works under every condition.
+
+### Build the Frontend
+
+```bash
+cd agentproof-local/frontend
+npm run build
+```
+
+Resolve build errors before deploying the frontend.
+
+### Pre-Demo Checklist
+
+- [ ] Frontend loads successfully.
+- [ ] Frontend API requests reach the correct backend.
+- [ ] Backend starts with the intended environment variables.
+- [ ] Automated tests pass.
+- [ ] Live API verification completes successfully.
+- [ ] Invalid requests are handled appropriately.
+- [ ] AI provider failures and timeouts are handled safely.
+- [ ] Private API keys are absent from browser bundles.
+- [ ] Companion operations require the intended authentication.
+- [ ] Browser permissions match the implemented functionality.
+- [ ] Cookie masking and redaction are verified with appropriate tests.
+- [ ] Production configuration matches the current deployment.
+
+---
+
+## ☁️ Deployment
+
+AgentGuard's documented deployment configuration separates the frontend from the backend.
+
+### Frontend — Vercel
+
+Live frontend:
+
+https://agentguard-zeta.vercel.app
+
+Configure the frontend environment variable:
+
+```dotenv
+VITE_API_BASE_URL=https://agentguard-8hwl.onrender.com
+```
+
+After changing production environment variables, rebuild or redeploy the frontend as required by Vercel.
+
+### Backend — Render
+
+Live backend:
+
+https://agentguard-8hwl.onrender.com
+
+Configure the backend environment variables in the Render dashboard.
+
+The application must bind to the port assigned by the hosting platform when deployed. Do not assume that a development port such as `8000` is always the production port.
+
+### Alternative — Google Cloud Run
+
+The supplied deployment notes also describe Cloud Run as an alternative backend host.
+
+For Cloud Run:
+
+- Configure the required environment variables and secrets.
+- Ensure the container listens on the port supplied by the platform.
+- Run the container using a non-root user where supported by the deployment configuration.
+- Configure the correct frontend origins.
+- Verify the deployed service using the project's test and live API verification commands.
+
+Do not claim a Cloud Run deployment is active unless one has actually been deployed.
+
+---
+
+## 🔒 Security Best Practices
+
+AgentGuard should follow these security practices as its implementation evolves.
+
+### Least Privilege
+
+Grant the browser extension only the permissions required for its documented features.
+
+Avoid broad access to every website or unrestricted control over browser data unless strictly necessary and clearly disclosed to the user.
+
+### Safe Browser Actions
+
+Browser protection should be implemented through documented browser extension APIs and explicitly authorized operations.
+
+Security actions should be predictable, auditable, and reversible where appropriate. Avoid silently deleting user data or treating an AI classification as sufficient justification for destructive actions.
+
+### Local Companion Protection
+
+A local companion service should:
+
+- Bind to loopback interfaces when remote access is unnecessary.
+- Authenticate privileged requests.
+- Validate request origins and input data as appropriate.
+- Avoid exposing privileged operations to arbitrary websites.
+- Protect tokens against disclosure.
+- Reject unauthorized requests.
+
+A shared token alone is not a complete security boundary. Browser-origin checks, network binding, authentication, and request validation must work together.
+
+### AI Security
+
+- Keep cloud provider keys on the backend.
+- Apply request timeouts and sensible resource limits.
+- Validate model outputs before acting on them.
+- Treat webpage content as untrusted input.
+- Avoid sending unnecessary private browsing data to external AI providers.
+- Never let webpage instructions override the application's security policies.
+
+### Cookie and Session Privacy
+
+Any cookie masking or redaction feature should be tested against the actual data paths where sensitive values could appear.
+
+Do not log authentication cookies, session tokens, authorization headers, or private credentials.
+
+---
+
+## ⚠️ Limitations
+
+AgentGuard's effectiveness depends on the implementation, permissions, configuration, and quality of the security signals available.
+
+Potential limitations include:
+
+- AI analysis may misclassify a website.
+- New or obfuscated threats may evade detection.
+- Cloud AI features depend on network connectivity and provider availability.
+- Rate limits, API failures, and timeouts can affect inference.
+- Browser capabilities depend on the extension platform and granted permissions.
+- A backend deployment does not automatically mean that every local companion or extension feature is available.
+- Security controls require independent testing; configuration alone is not proof of effectiveness.
+
+AgentGuard should complement, not replace, browser security features, operating-system updates, and safe browsing practices.
+
+---
+
+## 🛣️ Future Improvements
+
+Potential improvements for future development include:
+
+- [ ] Expand malicious URL and phishing detection.
+- [ ] Add reproducible security evaluation datasets and benchmarks.
+- [ ] Improve explanations for suspicious website classifications.
+- [ ] Add more robust false-positive and false-negative reporting.
+- [ ] Improve privacy controls for AI-assisted analysis.
+- [ ] Expand automated integration and browser-extension tests.
+- [ ] Improve resilience when the backend or AI provider is unavailable.
+- [ ] Strengthen local companion authentication and authorization.
+- [ ] Add clearer security event reporting and diagnostics.
+
+These are proposed improvements, not claims that the features are already implemented.
+
+---
+
+## 🤝 Contributing
+
+Contributions, bug reports, documentation improvements, and security-focused suggestions are welcome.
+
+### How to Contribute
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make a focused change.
+4. Run the relevant tests.
+5. Check that no credentials or personal data have been committed.
+6. Submit a pull request describing the change and its verification.
+
+Example:
+
+```bash
+git checkout -b feat/improve-security-analysis
+
+# Make your changes.
+
+git add .
+git commit -m "Improve security analysis"
+git push origin feat/improve-security-analysis
+```
+
+Open a pull request from your branch and explain:
+
+- What changed.
+- Why the change is useful.
+- How it was tested.
+- Any security or privacy implications.
+
+### Reporting Security Issues
+
+Avoid publishing exploitable vulnerabilities, private tokens, or sensitive user data in public issues.
+
+Use an appropriate private reporting channel if one is available for the repository.
+
+---
+
+## 📄 License
+
+Add the license that applies to this repository.
+
+If the project does not yet contain a `LICENSE` file, select an appropriate license before claiming that the project is open source. Until then, do not imply that reuse or redistribution is automatically permitted.
+
+---
+
+## 🙌 Acknowledgements
+
+AgentGuard is developed as a security-focused project exploring browser protection, AI-assisted analysis, and practical application security.
+
+Thanks to the open-source communities and developers whose tools and documentation make experimentation and collaborative development possible.
+
+---
 
 <div align="center">
 
-**AgentGuard — local-first tools, explicit policies, auditable decisions.**
+## 🛡️ AgentGuard
 
-[Live demo](https://frontend-lake-delta-0bodi7q6wt.vercel.app/) · [GitHub repository](https://github.com/shreyash-bhosale/AgentGuard)
+**Building safer browsing experiences through practical security engineering.**
+
+[Live Frontend](https://agentguard-zeta.vercel.app) · [Backend API](https://agentguard-8hwl.onrender.com) · [GitHub Repository](https://github.com/shreyash-bhosale/AgentGuard)
+
+*Security is a continuous process, not a one-time feature.*
 
 </div>
