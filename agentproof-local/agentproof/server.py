@@ -5,6 +5,9 @@ and reporting system via local HTTP endpoints.
 """
 
 from datetime import datetime, timezone
+import json
+import logging
+from pathlib import Path
 from typing import Any, Literal, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +30,33 @@ from agentproof.scenario_runner import (
     validate_scenario,
 )
 from agentproof.schemas import ScenarioModel
+
+logger = logging.getLogger(__name__)
+
+AUDIT_LOG_PATH = Path(__file__).resolve().parent.parent / "reports" / "security_audit.jsonl"
+
+
+def log_policy_decision(
+    action: str,
+    target: str,
+    allowed: bool,
+    reason: str,
+) -> None:
+    """Log an evaluated policy decision to the append-only security audit file."""
+    try:
+        AUDIT_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        event = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "action": action,
+            "target": target,
+            "allowed": allowed,
+            "reason": reason,
+        }
+        with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event) + "\n")
+    except Exception as exc:
+        logger.warning("Failed to write to security audit log %s: %s", AUDIT_LOG_PATH, exc)
+
 
 app = FastAPI(
     title="AgentProof Local API",
@@ -377,6 +407,13 @@ def simulate_policy_decision(req: PolicySimulateRequest) -> dict[str, Any]:
         }
 
     decision = evaluate_action(proposal)
+    log_policy_decision(
+        action=str(proposal.action),
+        target=str(proposal.target),
+        allowed=decision.allowed,
+        reason=str(decision.reason),
+    )
+
     if decision.allowed:
         tool_res = execute_mock_action(proposal.action, proposal.target)
     else:
