@@ -5,14 +5,39 @@ and reporting system via local HTTP endpoints.
 """
 
 from datetime import datetime, timezone
+import logging
 from typing import Any, Literal, Optional
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
+import os
+
+logger = logging.getLogger("agentproof.server")
+from fastapi import (
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+    UploadFile,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from agentproof.ai_provider import get_ai_provider
 from agentproof.config import config
+from agentproof.exceptions import (
+    AIProviderError,
+    InferenceAuthError,
+    InferenceTimeoutError,
+    InferenceUnavailableError,
+    InvalidImageError,
+    SchemaValidationError,
+)
 from agentproof.llm_client import check_ollama_connection
 from agentproof.metrics import calculate_metrics
+from agentproof.multimodal_analyzer import MultimodalAnalyzer
 from agentproof.reporting import (
     generate_csv_report,
     generate_json_report,
@@ -26,26 +51,40 @@ from agentproof.scenario_runner import (
     run_scenarios,
     validate_scenario,
 )
-from agentproof.schemas import ScenarioModel
+from agentproof.schemas import MultimodalAnalysisResponse, ScenarioModel
 
 app = FastAPI(
-    title="AgentProof Local API",
-    description="Deterministic AI Agent Security & Policy Evaluation Backend",
+    title="AgentGuard Security & Multimodal API",
+    description="Deterministic AI Agent Security, Policy Evaluation & Cloud Gemma 4 Multimodal Backend",
     version=config.app_version,
 )
 
-# Narrow CORS configuration for local development
+# CORS configuration supporting local dev, preview ports, and production Vercel frontend
+configured_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+cors_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "https://frontend-lake-delta-0bodi7q6wt.vercel.app",
+] + configured_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
+    allow_origins=cors_origins if "*" not in configured_origins else ["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE"],
     allow_headers=["*"],
 )
 
 # In-memory store for evaluation runs and custom scenarios during server lifetime
 EVALUATION_HISTORY: list[dict[str, Any]] = []
 CUSTOM_SCENARIOS: list[dict[str, Any]] = []
+multimodal_analyzer = MultimodalAnalyzer()
 
 
 class EvaluationRequest(BaseModel):
@@ -57,12 +96,18 @@ class EvaluationRequest(BaseModel):
 
 @app.get("/api/health")
 def get_health() -> dict[str, Any]:
-    """Health check returning backend status and live Ollama connectivity."""
-    ollama_info = check_ollama_connection(config.ollama_url, timeout=3)
+    """Health check returning backend status, live Ollama connectivity, and cloud AI provider metadata."""
+    ollama_info = check_ollama_connection(config.ollama_url, timeout=2)
     return {
         "status": "healthy",
         "version": config.app_version,
-        "backend": "FastAPI + AgentProof Core",
+        "backend": "FastAPI + AgentGuard Core",
+        "ai_provider": {
+            "configured_provider": config.ai_provider,
+            "gemma_model": config.gemma_model,
+            "has_cloud_credentials": bool(config.gemma_api_key or config.gemma_endpoint),
+            "cloud_hosted": config.ai_provider in ("gemma_cloud", "gemma_openai"),
+        },
         "ollama": ollama_info,
         "default_model": config.default_model,
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -606,6 +651,103 @@ def summarize_privacy_policy_endpoint(req: OllamaPrivacyPolicyRequest) -> dict[s
         url=req.url,
         model_name=req.model_name,
     )
+
+
+# ---------------------------------------------------------------------------
+# Cloud Gemma 4 Multimodal Threat Analysis Endpoints
+# ---------------------------------------------------------------------------
+
+@app.get("/api/ai/readiness")
+@app.get("/api/v1/readiness")
+async def get_ai_readiness(provider: Optional[str] = Query(default=None)) -> dict[str, Any]:
+    """
+    Verify model readiness and inference availability for the selected provider.
+    Verifies API keys, endpoint reachability, and model cards without running heavy generation.
+    """
+    try:
+        active_provider = get_ai_provider(provider)
+        status = await active_provider.check_readiness()
+        return {
+            "status": "ready" if status.get("available") else "unavailable",
+            "details": status,
+        }
+    except Exception as exc:
+        return {
+            "status": "unavailable",
+            "details": {
+                "available": False,
+                "error": f"Readiness probe error: {exc}",
+            },
+        }
+
+
+@app.post("/api/multimodal/analyze", response_model=MultimodalAnalysisResponse)
+@app.post("/api/v1/analyze/screenshot", response_model=MultimodalAnalysisResponse)
+async def analyze_screenshot_endpoint(
+    screenshot: UploadFile = File(..., description="Target webpage screenshot file (PNG, JPEG, WebP)"),
+    url: Optional[str] = Form(default=None, description="Optional target URL for cross-validation"),
+    context: Optional[str] = Form(default=None, description="Optional user observation notes"),
+    provider: Optional[str] = Form(default=None, description="Optional explicit provider override"),
+) -> MultimodalAnalysisResponse:
+    """
+    Inspect a user-submitted webpage screenshot with cloud-hosted Gemma 4.
+    Extracts structured threat indicators, uncertainty boundaries, deterministic risk score,
+    and gates all recommended actions through the authoritative policy engine.
+    """
+    # 1. Read bounded file stream
+    try:
+        raw_bytes = await screenshot.read()
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Failed to read uploaded screenshot: {exc}")
+
+    if not raw_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty (0 bytes).")
+
+    if len(raw_bytes) > config.max_image_upload_bytes:
+        limit_mb = config.max_image_upload_bytes / (1024 * 1024)
+        raise HTTPException(
+            status_code=413,
+            detail=f"Uploaded image ({len(raw_bytes)/(1024*1024):.1f}MB) exceeds {limit_mb:.0f}MB limit.",
+        )
+
+    # 2. Execute multimodal security inspection
+    try:
+        result = await multimodal_analyzer.analyze_screenshot(
+            image_bytes=raw_bytes,
+            filename=screenshot.filename or "screenshot.png",
+            url_context=url,
+            user_context=context,
+            provider_name=provider,
+        )
+        return result
+    except InvalidImageError as exc:
+        raise HTTPException(status_code=400, detail=f"Image validation failed: {exc}")
+    except InferenceAuthError as exc:
+        raise HTTPException(
+            status_code=401,
+            detail=f"Inference authentication error: {exc}. Please verify GEMMA_API_KEY.",
+        )
+    except InferenceTimeoutError as exc:
+        raise HTTPException(
+            status_code=504,
+            detail=f"Cloud model inference timed out: {exc}. Check endpoint latency.",
+        )
+    except InferenceUnavailableError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cloud Gemma inference service unavailable: {exc}",
+        )
+    except SchemaValidationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Model output schema validation failed: {exc}",
+        )
+    except Exception as exc:
+        logger.exception("Unexpected error during multimodal analysis")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal error during threat analysis. Please retry your request.",
+        )
 
 
 

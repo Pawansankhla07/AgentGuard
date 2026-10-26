@@ -1,8 +1,12 @@
-streamlit
-requests
-pydantic
-pytest
 fastapi
 uvicorn
+pydantic
+requests
 httpx
+google-genai
+pillow
+python-multipart
 pandas
+streamlit
+pytest
+python-dotenv
